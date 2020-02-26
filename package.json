@@ -1,5 +1,9 @@
 {
-  "author": "Jeff \"Huey\" Huelsbeck",
+  "author": {
+    "email": "huey@carpetelam.com",
+    "name": "Jeff \"Huey\" Huelsbeck",
+    "url": "https://www.carpetelam.com"
+  },
   "bin": {
     "cv3": "./build/cli.js"
   },
@@ -23,10 +27,16 @@
     "build"
   ],
   "homepage": "https://github.com/CarpeTelam/cv3-cli/#readme",
+  "keywords": [
+    "commercev3",
+    "cv3",
+    "cli",
+    "ink",
+    "pastel"
+  ],
   "license": "MIT",
   "main": "./build/cli.js",
   "name": "cv3-cli",
-  "preferGlobal": true,
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:CarpeTelam/cv3-cli.git"
