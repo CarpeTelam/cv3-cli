@@ -1,19 +1,11 @@
 {
-  "name": "cv3",
-  "version": "0.0.0",
-  "license": "MIT",
-  "bin": "./build/cli.js",
-  "engines": {
-    "node": ">=8"
+  "author": "Jeff \"Huey\" Huelsbeck",
+  "bin": {
+    "cv3": "./build/cli.js"
   },
-  "scripts": {
-    "dev": "pastel dev",
-    "build": "pastel build",
-    "prepare": "pastel build"
+  "bugs": {
+    "url": "https://github.com/CarpeTelam/cv3-cli/issues"
   },
-  "files": [
-    "build"
-  ],
   "dependencies": {
     "ink": "^2.7.1",
     "pastel": "^1.0.3",
@@ -22,5 +14,27 @@
   },
   "devDependencies": {
     "prettier": "^1.19.1"
-  }
+  },
+  "description": "A CLI tool for working locally with CommerceV3 stores.",
+  "engines": {
+    "node": ">=8"
+  },
+  "files": [
+    "build"
+  ],
+  "homepage": "https://github.com/CarpeTelam/cv3-cli/#readme",
+  "license": "MIT",
+  "main": "./build/cli.js",
+  "name": "cv3-cli",
+  "preferGlobal": true,
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:CarpeTelam/cv3-cli.git"
+  },
+  "scripts": {
+    "build": "pastel build",
+    "dev": "pastel dev",
+    "prepare": "pastel build"
+  },
+  "version": "0.1.0"
 }
