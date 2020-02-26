@@ -17,6 +17,7 @@
     "react": "^16.12.0"
   },
   "devDependencies": {
+    "nodemon": "^2.0.2",
     "prettier": "^1.19.1"
   },
   "description": "A CLI tool for working locally with CommerceV3 stores.",
@@ -44,8 +45,8 @@
   "scripts": {
     "build": "pastel build",
     "cv3": "./build/cli.js",
-    "dev": "pastel dev",
-    "prepare": "pastel build"
+    "dev": "nodemon --watch commands --watch src --exec yarn build",
+    "prepare": "yarn build"
   },
   "version": "0.1.0"
 }
