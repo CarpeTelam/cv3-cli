@@ -2,14 +2,20 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Text } from "ink";
 
-const Hello = ({ name }) => <Text>Hello, {name}</Text>;
+import Hello from "../src/components/Hello";
 
-Hello.propTypes = {
+/// CV3 CLI tool for local development
+function CV3(props) {
+  return <Hello name={props.name} />;
+}
+
+CV3.propTypes = {
+  /// The "name" option can be used to alter the greeting
   name: PropTypes.string.isRequired
 };
 
-Hello.defaultProps = {
+CV3.defaultProps = {
   name: "Stranger"
 };
 
-export default Hello;
+export default CV3;
