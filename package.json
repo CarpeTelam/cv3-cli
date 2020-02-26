@@ -43,6 +43,7 @@
   },
   "scripts": {
     "build": "pastel build",
+    "cv3": "./build/cli.js",
     "dev": "pastel dev",
     "prepare": "pastel build"
   },
