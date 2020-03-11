@@ -38,17 +38,29 @@ function TextInput(props) {
           return;
         case ESCAPE:
           if (props.onCancel) {
-            props.onCancel(value);
+            if (value) {
+              props.onCancel(value);
+            } else if (props.defaultValue) {
+              props.onCancel(props.defaultValue);
+            }
           }
           return;
         case RETURN:
           if (props.onSubmit) {
-            props.onSubmit(value);
+            if (value) {
+              props.onSubmit(value);
+            } else if (props.defaultValue) {
+              props.onSubmit(props.defaultValue);
+            }
           }
           return;
         case TAB:
           if (props.onTab) {
-            props.onTab(value);
+            if (value) {
+              props.onTab(value);
+            } else if (props.defaultValue) {
+              props.onTab(props.defaultValue);
+            }
           }
           return;
         case ARROW_LEFT:
@@ -106,8 +118,8 @@ function TextInput(props) {
   if (props.showCursor && !props.mask && props.focus) {
     renderedValue = props.value.length > 0 ? "" : chalk.inverse(" ");
 
-    let index = 0;
-    for (const char of props.value) {
+    for (let index = 0; index < props.value.length; index++) {
+      const char = props.value.charAt(index);
       if (
         index >= cursorOffset - renderedCursorWidth &&
         index <= cursorOffset
@@ -116,7 +128,6 @@ function TextInput(props) {
       } else {
         renderedValue += char;
       }
-      index++;
     }
 
     if (props.value.length > 0 && cursorOffset === props.value.length) {
@@ -139,6 +150,7 @@ function TextInput(props) {
 }
 
 TextInput.propTypes = {
+  defaultValue: PropTypes.string,
   focus: PropTypes.bool,
   highlightPastedText: PropTypes.bool,
   inputColor: PropTypes.string,
