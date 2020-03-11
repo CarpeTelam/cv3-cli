@@ -50,7 +50,6 @@ function init() {
           onChange={handleChange}
           onSubmit={handleSubmit}
           placeholder="(y/N)"
-          showCursor={false}
           value={query}
         />
       </Box>
