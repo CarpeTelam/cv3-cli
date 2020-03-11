@@ -3,66 +3,57 @@ import PropTypes from "prop-types";
 import fs from "fs";
 import { Box, Color, Text } from "ink";
 
+import FileContent from "../src/components/FileContent";
 import TextInput from "../src/components/TextInput";
 
 /// Init CV3 store repo
 function init() {
   if (fs.existsSync("./store.json")) {
-    const [query, setQuery] = useState("");
     const [input, setInput] = useState("");
+    const [value, setValue] = useState("");
 
-    const store = JSON.parse(fs.readFileSync("./store.json"));
+    const json = JSON.parse(fs.readFileSync("./store.json"));
 
-    function handleCancel(input) {
-      setQuery("");
+    function handleCancel(value) {
       setInput("");
+      setValue("");
     }
 
-    function handleChange(query) {
-      setQuery(query);
+    function handleChange(value) {
+      setInput(value);
     }
 
-    function handleSubmit(input) {
-      setQuery("");
-      setInput(input);
+    function handleSubmit(value) {
+      setInput("");
+      setValue(value);
     }
 
-    function handleTab(input) {
-      setQuery("");
-      setInput(input);
+    function handleTab(value) {
+      setInput("");
+      setValue(value);
     }
 
     return (
       <Box flexDirection="column">
+        <FileContent
+          file="./store.json"
+          label="You already have a file named store.json with the folllowing info:"
+        />
         <Box>
-          {"You already have a file named store.json with the folllowing info:"}
-        </Box>
-        <Box>{"{"}</Box>
-        {Object.keys(store).map(function(key, index) {
-          return (
-            <Box key={key}>
-              {`  ${key}: `}
-              <Text bold>
-                <Color keyword="red">{store[key]}</Color>
-              </Text>
-            </Box>
-          );
-        })}
-        <Box>{"}"}</Box>
-        <Box>
-          query: <Color keyword="red">{query}</Color>
+          input: <Color keyword="red">{input}</Color>
         </Box>
         <Box>
-          input: <Color keyword="blue">{input}</Color>
+          value: <Color keyword="blue">{value}</Color>
         </Box>
         <TextInput
+          defaultValue="n"
           label="Do you wish to overwrite it?"
           onCancel={handleCancel}
           onChange={handleChange}
           onSubmit={handleSubmit}
           onTab={handleTab}
           placeholder="(y/N)"
-          value={query}
+          value={input}
         />
       </Box>
     );
