@@ -13,11 +13,21 @@ function init() {
 
     const store = JSON.parse(fs.readFileSync("./store.json"));
 
+    function handleCancel(input) {
+      setQuery("");
+      setInput("");
+    }
+
     function handleChange(query) {
       setQuery(query);
     }
 
     function handleSubmit(input) {
+      setQuery("");
+      setInput(input);
+    }
+
+    function handleTab(input) {
       setQuery("");
       setInput(input);
     }
@@ -47,8 +57,10 @@ function init() {
         </Box>
         <TextInput
           label="Do you wish to overwrite it?"
+          onCancel={handleCancel}
           onChange={handleChange}
           onSubmit={handleSubmit}
+          onTab={handleTab}
           placeholder="(y/N)"
           value={query}
         />
