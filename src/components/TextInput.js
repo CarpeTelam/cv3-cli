@@ -10,7 +10,9 @@ const ARROW_UP = "\u001B[A";
 const BACKSPACE = "\x08";
 const CTRL_C = "\x03";
 const DELETE = "\x7F";
-const RETURN = "\r";
+const ESCAPE = "\x1B";
+const RETURN = "\x0D";
+const TAB = "\x09";
 
 function TextInput(props) {
   const [cursorOffset, setCursorOffset] = useState((props.value || "").length);
@@ -34,9 +36,19 @@ function TextInput(props) {
         case ARROW_UP:
         case CTRL_C:
           return;
+        case ESCAPE:
+          if (props.onCancel) {
+            props.onCancel(value);
+          }
+          return;
         case RETURN:
           if (props.onSubmit) {
             props.onSubmit(value);
+          }
+          return;
+        case TAB:
+          if (props.onTab) {
+            props.onTab(value);
           }
           return;
         case ARROW_LEFT:
