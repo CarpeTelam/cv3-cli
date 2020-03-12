@@ -12,6 +12,7 @@ const CTRL_C = "\x03";
 const DELETE = "\x7F";
 const ESCAPE = "\x1B";
 const RETURN = "\x0D";
+const SHIFT_TAB = "\u001B[Z";
 const TAB = "\x09";
 
 function TextInput(props) {
@@ -37,30 +38,23 @@ function TextInput(props) {
         case CTRL_C:
           return;
         case ESCAPE:
-          if (props.onCancel) {
-            if (value) {
-              props.onCancel(value);
-            } else if (props.defaultValue) {
-              props.onCancel(props.defaultValue);
-            }
+          if (props.onEscape) {
+            props.onEscape(value || props.defaultValue);
           }
           return;
         case RETURN:
-          if (props.onSubmit) {
-            if (value) {
-              props.onSubmit(value);
-            } else if (props.defaultValue) {
-              props.onSubmit(props.defaultValue);
-            }
+          if (props.onReturn) {
+            props.onReturn(value || props.defaultValue);
+          }
+          return;
+        case SHIFT_TAB:
+          if (props.onShiftTab) {
+            props.onShiftTab(value || props.defaultValue);
           }
           return;
         case TAB:
           if (props.onTab) {
-            if (value) {
-              props.onTab(value);
-            } else if (props.defaultValue) {
-              props.onTab(props.defaultValue);
-            }
+            props.onTab(value || props.defaultValue);
           }
           return;
         case ARROW_LEFT:
@@ -139,7 +133,11 @@ function TextInput(props) {
 
   return (
     <Box>
-      {props.label && <Box marginRight={1}>{props.label}</Box>}
+      {props.label && (
+        <Box marginRight={1}>
+          <Color keyword={props.labelColor}>{props.label}</Color>
+        </Box>
+      )}
       {!hasValue && props.placeholder ? (
         <Color keyword={props.placeholderColor}>{props.placeholder}</Color>
       ) : (
@@ -155,9 +153,13 @@ TextInput.propTypes = {
   highlightPastedText: PropTypes.bool,
   inputColor: PropTypes.string,
   label: PropTypes.string,
+  labelColor: PropTypes.string,
   mask: PropTypes.string,
   onChange: PropTypes.func,
-  onSubmit: PropTypes.func,
+  onEscape: PropTypes.func,
+  onReturn: PropTypes.func,
+  onShiftTab: PropTypes.func,
+  onTab: PropTypes.func,
   placeholder: PropTypes.string,
   placeholderColor: PropTypes.string,
   showCursor: PropTypes.bool,
@@ -165,9 +167,11 @@ TextInput.propTypes = {
 };
 
 TextInput.defaultProps = {
+  defaultValue: "",
   focus: true,
   highlightPastedText: false,
   inputColor: "green",
+  labelColor: "white",
   placeholder: "",
   placeholderColor: "yellow",
   showCursor: true
