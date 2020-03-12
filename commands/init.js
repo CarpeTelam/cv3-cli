@@ -11,26 +11,39 @@ function init() {
   if (fs.existsSync("./store.json")) {
     const [input, setInput] = useState("");
     const [value, setValue] = useState("");
-
-    const json = JSON.parse(fs.readFileSync("./store.json"));
-
-    function handleCancel(value) {
-      setInput("");
-      setValue("");
-    }
+    const [focus, setFocus] = useState(0);
 
     function handleChange(value) {
       setInput(value);
     }
 
-    function handleSubmit(value) {
+    function handleEscape(value) {
+      setInput("");
+      setValue("");
+    }
+
+    function handleReturn(value) {
       setInput("");
       setValue(value);
+      if (focus < 3) {
+        setFocus(focus + 1);
+      }
+    }
+
+    function handleShiftTab(value) {
+      setInput("");
+      setValue(value);
+      if (focus > 0) {
+        setFocus(focus - 1);
+      }
     }
 
     function handleTab(value) {
       setInput("");
       setValue(value);
+      if (focus < 3) {
+        setFocus(focus + 1);
+      }
     }
 
     return (
@@ -47,10 +60,52 @@ function init() {
         </Box>
         <TextInput
           defaultValue="n"
-          label="Do you wish to overwrite it?"
-          onCancel={handleCancel}
+          focus={focus === 0}
+          label="Input 1"
+          labelColor={focus === 0 ? "magenta" : "white"}
           onChange={handleChange}
-          onSubmit={handleSubmit}
+          onEscape={handleEscape}
+          onReturn={handleReturn}
+          onShiftTab={handleShiftTab}
+          onTab={handleTab}
+          placeholder="(y/N)"
+          value={input}
+        />
+        <TextInput
+          defaultValue="n"
+          focus={focus === 1}
+          label="Input 2"
+          labelColor={focus === 1 ? "magenta" : "white"}
+          onChange={handleChange}
+          onEscape={handleEscape}
+          onReturn={handleReturn}
+          onShiftTab={handleShiftTab}
+          onTab={handleTab}
+          placeholder="(y/N)"
+          value={input}
+        />
+        <TextInput
+          defaultValue="n"
+          focus={focus === 3}
+          label="Input 4"
+          labelColor={focus === 3 ? "magenta" : "white"}
+          onChange={handleChange}
+          onEscape={handleEscape}
+          onReturn={handleReturn}
+          onShiftTab={handleShiftTab}
+          onTab={handleTab}
+          placeholder="(y/N)"
+          value={input}
+        />
+        <TextInput
+          defaultValue="n"
+          focus={focus === 2}
+          label="Input 3"
+          labelColor={focus === 2 ? "magenta" : "white"}
+          onChange={handleChange}
+          onEscape={handleEscape}
+          onReturn={handleReturn}
+          onShiftTab={handleShiftTab}
           onTab={handleTab}
           placeholder="(y/N)"
           value={input}
