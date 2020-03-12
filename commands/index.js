@@ -1,11 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-
-import Hello from "../src/components/Hello";
+import { Box } from "ink";
 
 /// CV3 CLI tool for local development
 function CV3(props) {
-  return <Hello color={props.color} name={props.name} />;
+  return <Box>cv3 cli</Box>;
 }
 
 CV3.propTypes = {
