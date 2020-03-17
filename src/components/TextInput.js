@@ -34,27 +34,38 @@ function TextInput(props) {
       let value = props.value;
       switch (string) {
         case ARROW_DOWN:
+          if (props.onArrowDown) {
+            props.onArrowDown(props.name, value || props.defaultValue);
+          }
+          return;
         case ARROW_UP:
+          if (props.onArrowUp) {
+            props.onArrowUp(props.name, value || props.defaultValue);
+          }
+          return;
         case CTRL_C:
+          if (props.onCtrlC) {
+            props.onCtrlC(props.name, value || props.defaultValue);
+          }
           return;
         case ESCAPE:
           if (props.onEscape) {
-            props.onEscape(value || props.defaultValue);
+            props.onEscape(props.name, value || props.defaultValue);
           }
           return;
         case RETURN:
           if (props.onReturn) {
-            props.onReturn(value || props.defaultValue);
+            props.onReturn(props.name, value || props.defaultValue);
           }
           return;
         case SHIFT_TAB:
           if (props.onShiftTab) {
-            props.onShiftTab(value || props.defaultValue);
+            props.onShiftTab(props.name, value || props.defaultValue);
           }
           return;
         case TAB:
           if (props.onTab) {
-            props.onTab(value || props.defaultValue);
+            props.onTab(props.name, value || props.defaultValue);
           }
           return;
         case ARROW_LEFT:
@@ -94,7 +105,7 @@ function TextInput(props) {
         setCursorOffset(value.length);
       }
       if (value !== props.value && props.onChange) {
-        props.onChange(value);
+        props.onChange(props.name, value);
       }
     }
 
@@ -148,19 +159,20 @@ function TextInput(props) {
 }
 
 TextInput.propTypes = {
-  defaultValue: PropTypes.string,
+  defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   focus: PropTypes.bool,
   highlightPastedText: PropTypes.bool,
   inputColor: PropTypes.string,
   label: PropTypes.string,
   labelColor: PropTypes.string,
   mask: PropTypes.string,
+  name: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   onEscape: PropTypes.func,
   onReturn: PropTypes.func,
   onShiftTab: PropTypes.func,
   onTab: PropTypes.func,
-  placeholder: PropTypes.string,
+  placeholder: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   placeholderColor: PropTypes.string,
   showCursor: PropTypes.bool,
   value: PropTypes.string.isRequired
