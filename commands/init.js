@@ -1,114 +1,92 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import fs from "fs";
-import { Box, Color, Text } from "ink";
+import { AppContext, Box, Color, Text } from "ink";
 
-import FileContent from "../src/components/FileContent";
+import JsonContent from "../src/components/JsonContent";
 import TextInput from "../src/components/TextInput";
+
+const defaultInputs = JSON.parse(fs.readFileSync("./store.json"));
 
 /// Init CV3 store repo
 function init() {
   if (fs.existsSync("./store.json")) {
-    const [input, setInput] = useState("");
-    const [value, setValue] = useState("");
+    const [inputs, setInputs] = useState(defaultInputs);
     const [focus, setFocus] = useState(0);
+    const { exit } = useContext(AppContext);
 
-    function handleChange(value) {
-      setInput(value);
+    function handleInput(key, value) {
+      return { [key]: value === "" || isNaN(value) ? value : value * 1 };
     }
 
-    function handleEscape(value) {
-      setInput("");
-      setValue("");
+    function handleChange(key, value) {
+      setInputs({ ...inputs, ...handleInput(key, value) });
     }
 
-    function handleReturn(value) {
-      setInput("");
-      setValue(value);
-      if (focus < 3) {
+    function handleEscape() {
+      exit();
+    }
+
+    function handleNext(key, value) {
+      setInputs({ ...inputs, ...handleInput(key, value) });
+      if (focus < 1) {
         setFocus(focus + 1);
       }
     }
 
-    function handleShiftTab(value) {
-      setInput("");
-      setValue(value);
+    function handlePrevious(key, value) {
+      setInputs({ ...inputs, ...handleInput(key, value) });
       if (focus > 0) {
         setFocus(focus - 1);
       }
     }
 
-    function handleTab(value) {
-      setInput("");
-      setValue(value);
-      if (focus < 3) {
-        setFocus(focus + 1);
+    function handleReturn(key, value) {
+      handleNext(key, value);
+      if (focus === 1) {
+        setFocus(2);
+        exit();
       }
     }
 
     return (
       <Box flexDirection="column">
-        <FileContent
-          file="./store.json"
+        <JsonContent
+          json={inputs}
           label="You already have a file named store.json with the folllowing info:"
+          valueColor="red"
         />
-        <Box>
-          input: <Color keyword="red">{input}</Color>
-        </Box>
-        <Box>
-          value: <Color keyword="blue">{value}</Color>
-        </Box>
         <TextInput
-          defaultValue="n"
+          defaultValue={defaultInputs.id}
           focus={focus === 0}
-          label="Input 1"
+          label="Store ID:"
           labelColor={focus === 0 ? "magenta" : "white"}
+          name="id"
+          onArrowDown={handleNext}
+          onArrowUp={handlePrevious}
           onChange={handleChange}
           onEscape={handleEscape}
           onReturn={handleReturn}
-          onShiftTab={handleShiftTab}
-          onTab={handleTab}
-          placeholder="(y/N)"
-          value={input}
+          onShiftTab={handlePrevious}
+          onTab={handleNext}
+          placeholder={defaultInputs.id}
+          value={String(inputs.id)}
         />
         <TextInput
-          defaultValue="n"
+          defaultValue={defaultInputs.stagingURL}
           focus={focus === 1}
-          label="Input 2"
+          label="Staging URL:"
           labelColor={focus === 1 ? "magenta" : "white"}
+          name="stagingURL"
+          onArrowDown={handleNext}
+          onArrowUp={handlePrevious}
           onChange={handleChange}
           onEscape={handleEscape}
           onReturn={handleReturn}
-          onShiftTab={handleShiftTab}
-          onTab={handleTab}
-          placeholder="(y/N)"
-          value={input}
-        />
-        <TextInput
-          defaultValue="n"
-          focus={focus === 3}
-          label="Input 4"
-          labelColor={focus === 3 ? "magenta" : "white"}
-          onChange={handleChange}
-          onEscape={handleEscape}
-          onReturn={handleReturn}
-          onShiftTab={handleShiftTab}
-          onTab={handleTab}
-          placeholder="(y/N)"
-          value={input}
-        />
-        <TextInput
-          defaultValue="n"
-          focus={focus === 2}
-          label="Input 3"
-          labelColor={focus === 2 ? "magenta" : "white"}
-          onChange={handleChange}
-          onEscape={handleEscape}
-          onReturn={handleReturn}
-          onShiftTab={handleShiftTab}
-          onTab={handleTab}
-          placeholder="(y/N)"
-          value={input}
+          onShiftTab={handlePrevious}
+          onTab={handleNext}
+          placeholder={defaultInputs.stagingURL}
+          value={String(inputs.stagingURL)}
         />
       </Box>
     );
