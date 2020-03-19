@@ -23,10 +23,15 @@ function TextInput(props) {
   const { stdin, setRawMode } = useStdin();
   const hasValue = props.value.length > 0;
   const renderedCursorWidth = props.highlightPastedText ? cursorWidth : 0;
+  const mask = props.type === "password" ? "*" : props.mask;
   let renderedValue = props.value;
 
+  function handleValue(value) {
+    return value || props.defaultValue;
+  }
+
   useEffect(() => {
-    function handleInput(data) {
+    function handleData(data) {
       if (!props.focus || !isMounted) {
         return;
       }
@@ -35,46 +40,46 @@ function TextInput(props) {
       switch (string) {
         case ARROW_DOWN:
           if (props.onArrowDown) {
-            props.onArrowDown(props.name, value || props.defaultValue);
+            props.onArrowDown(props.name, handleValue(value));
           }
           return;
         case ARROW_UP:
           if (props.onArrowUp) {
-            props.onArrowUp(props.name, value || props.defaultValue);
+            props.onArrowUp(props.name, handleValue(value));
           }
           return;
         case CTRL_C:
           if (props.onCtrlC) {
-            props.onCtrlC(props.name, value || props.defaultValue);
+            props.onCtrlC(props.name, handleValue(value));
           }
           return;
         case ESCAPE:
           if (props.onEscape) {
-            props.onEscape(props.name, value || props.defaultValue);
+            props.onEscape(props.name, handleValue(value));
           }
           return;
         case RETURN:
           if (props.onReturn) {
-            props.onReturn(props.name, value || props.defaultValue);
+            props.onReturn(props.name, handleValue(value));
           }
           return;
         case SHIFT_TAB:
           if (props.onShiftTab) {
-            props.onShiftTab(props.name, value || props.defaultValue);
+            props.onShiftTab(props.name, handleValue(value));
           }
           return;
         case TAB:
           if (props.onTab) {
-            props.onTab(props.name, value || props.defaultValue);
+            props.onTab(props.name, handleValue(value));
           }
           return;
         case ARROW_LEFT:
-          if (props.showCursor && !props.mask && cursorOffset > 0) {
+          if (props.showCursor && !mask && cursorOffset > 0) {
             setCursorOffset(cursorOffset - 1);
           }
           break;
         case ARROW_RIGHT:
-          if (props.showCursor && !props.mask && cursorOffset < value.length) {
+          if (props.showCursor && !mask && cursorOffset < value.length) {
             setCursorOffset(cursorOffset + 1);
           }
           break;
@@ -88,6 +93,9 @@ function TextInput(props) {
           }
           break;
         default:
+          if (props.type === "number" && isNaN(data)) {
+            break;
+          }
           value =
             value.slice(0, cursorOffset) +
             string +
@@ -111,16 +119,16 @@ function TextInput(props) {
 
     setIsMounted(true);
     setRawMode(true);
-    stdin.addListener("data", handleInput);
+    stdin.addListener("data", handleData);
 
     return function cleanup() {
       setIsMounted(false);
-      stdin.removeListener("data", handleInput);
+      stdin.removeListener("data", handleData);
       setRawMode(false);
     };
   });
 
-  if (props.showCursor && !props.mask && props.focus) {
+  if (props.showCursor && !mask && props.focus) {
     renderedValue = props.value.length > 0 ? "" : chalk.inverse(" ");
 
     for (let index = 0; index < props.value.length; index++) {
@@ -138,8 +146,8 @@ function TextInput(props) {
     if (props.value.length > 0 && cursorOffset === props.value.length) {
       renderedValue += chalk.inverse(" ");
     }
-  } else if (props.mask) {
-    renderedValue = props.mask.repeat(props.value.length);
+  } else if (mask) {
+    renderedValue = mask.repeat(props.value.length);
   }
 
   return (
@@ -175,6 +183,7 @@ TextInput.propTypes = {
   placeholder: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   placeholderColor: PropTypes.string,
   showCursor: PropTypes.bool,
+  type: PropTypes.string,
   value: PropTypes.string.isRequired
 };
 
@@ -186,7 +195,8 @@ TextInput.defaultProps = {
   labelColor: "white",
   placeholder: "",
   placeholderColor: "yellow",
-  showCursor: true
+  showCursor: true,
+  type: "text"
 };
 
 export function UncontrolledTextInput(props) {
