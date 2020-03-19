@@ -11,16 +11,18 @@ const defaultInputs = JSON.parse(fs.readFileSync("./store.json"));
 /// Init CV3 store repo
 function init() {
   if (fs.existsSync("./store.json")) {
-    const [inputs, setInputs] = useState(defaultInputs);
+    const [inputs, setInputs] = useState({ ...defaultInputs, password: "" });
     const [focus, setFocus] = useState(0);
     const { exit } = useContext(AppContext);
 
-    function handleInput(key, value) {
-      return { [key]: value === "" || isNaN(value) ? value : value * 1 };
-    }
+    const fields = [
+      { name: "id", label: "Store ID:", type: "number" },
+      { name: "stagingURL", label: "Staging URL:", type: "text" },
+      { name: "password", label: "Password:", type: "password" }
+    ];
 
-    function handleChange(key, value) {
-      setInputs({ ...inputs, ...handleInput(key, value) });
+    function handleInput(key, value) {
+      setInputs({ ...inputs, [key]: value });
     }
 
     function handleEscape() {
@@ -28,14 +30,14 @@ function init() {
     }
 
     function handleNext(key, value) {
-      setInputs({ ...inputs, ...handleInput(key, value) });
-      if (focus < 1) {
+      handleInput(key, value);
+      if (focus < fields.length - 1) {
         setFocus(focus + 1);
       }
     }
 
     function handlePrevious(key, value) {
-      setInputs({ ...inputs, ...handleInput(key, value) });
+      handleInput(key, value);
       if (focus > 0) {
         setFocus(focus - 1);
       }
@@ -43,51 +45,35 @@ function init() {
 
     function handleReturn(key, value) {
       handleNext(key, value);
-      if (focus === 1) {
-        setFocus(2);
+      if (focus === fields.length - 1) {
+        setFocus(fields.length);
         exit();
       }
     }
 
     return (
       <Box flexDirection="column">
-        <JsonContent
-          json={inputs}
-          label="You already have a file named store.json with the folllowing info:"
-          valueColor="red"
-        />
-        <TextInput
-          defaultValue={defaultInputs.id}
-          focus={focus === 0}
-          label="Store ID:"
-          labelColor={focus === 0 ? "magenta" : "white"}
-          name="id"
-          onArrowDown={handleNext}
-          onArrowUp={handlePrevious}
-          onChange={handleChange}
-          onEscape={handleEscape}
-          onReturn={handleReturn}
-          onShiftTab={handlePrevious}
-          onTab={handleNext}
-          placeholder={defaultInputs.id}
-          value={String(inputs.id)}
-        />
-        <TextInput
-          defaultValue={defaultInputs.stagingURL}
-          focus={focus === 1}
-          label="Staging URL:"
-          labelColor={focus === 1 ? "magenta" : "white"}
-          name="stagingURL"
-          onArrowDown={handleNext}
-          onArrowUp={handlePrevious}
-          onChange={handleChange}
-          onEscape={handleEscape}
-          onReturn={handleReturn}
-          onShiftTab={handlePrevious}
-          onTab={handleNext}
-          placeholder={defaultInputs.stagingURL}
-          value={String(inputs.stagingURL)}
-        />
+        <JsonContent json={inputs} label="store.json:" valueColor="red" />
+        {fields.map((field, index) => (
+          <TextInput
+            defaultValue={defaultInputs[field.name]}
+            focus={focus === index}
+            key={field.name}
+            label={field.label}
+            labelColor={focus === index ? "magenta" : "white"}
+            name={field.name}
+            onArrowDown={handleNext}
+            onArrowUp={handlePrevious}
+            onChange={handleInput}
+            onEscape={handleEscape}
+            onReturn={handleReturn}
+            onShiftTab={handlePrevious}
+            onTab={handleNext}
+            placeholder={defaultInputs[field.name]}
+            type={field.type}
+            value={String(inputs[field.name])}
+          />
+        ))}
       </Box>
     );
   } else {
