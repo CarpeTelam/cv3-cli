@@ -11,14 +11,13 @@ const defaultInputs = JSON.parse(fs.readFileSync("./store.json"));
 /// Init CV3 store repo
 function init() {
   if (fs.existsSync("./store.json")) {
-    const [inputs, setInputs] = useState({ ...defaultInputs, password: "" });
+    const [inputs, setInputs] = useState(defaultInputs);
     const [focus, setFocus] = useState(0);
     const { exit } = useContext(AppContext);
 
     const fields = [
       { name: "id", label: "Store ID:", type: "number" },
-      { name: "stagingURL", label: "Staging URL:", type: "text" },
-      { name: "password", label: "Password:", type: "password" }
+      { name: "stagingURL", label: "Staging URL:", type: "text" }
     ];
 
     function handleInput(key, value) {
@@ -71,7 +70,7 @@ function init() {
             onTab={handleNext}
             placeholder={defaultInputs[field.name]}
             type={field.type}
-            value={String(inputs[field.name])}
+            value={String(inputs[field.name] || "")}
           />
         ))}
       </Box>
