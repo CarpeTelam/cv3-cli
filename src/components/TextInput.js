@@ -27,7 +27,10 @@ function TextInput(props) {
   let renderedValue = props.value;
 
   function handleValue(value) {
-    return value || props.defaultValue;
+    const returnValue = value || props.defaultValue;
+    return props.type === "number" && returnValue !== ""
+      ? parseInt(returnValue)
+      : returnValue;
   }
 
   useEffect(() => {
@@ -85,6 +88,9 @@ function TextInput(props) {
           break;
         case BACKSPACE:
         case DELETE:
+          if (cursorOffset === 0) {
+            break;
+          }
           value =
             value.slice(0, cursorOffset - 1) +
             value.slice(cursorOffset, value.length);
@@ -113,7 +119,10 @@ function TextInput(props) {
         setCursorOffset(value.length);
       }
       if (value !== props.value && props.onChange) {
-        props.onChange(props.name, value);
+        const returnValue = props.onChange(
+          props.name,
+          props.type === "number" && value !== "" ? parseInt(value) : value
+        );
       }
     }
 
