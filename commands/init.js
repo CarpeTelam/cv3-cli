@@ -66,11 +66,15 @@ function init() {
       const timestamp = moment().unix();
       const cv3Credentials = { username, password };
       const store = { id, stagingURL, timestamp };
-      fs.writeFileSync(
-        "./cv3-credentials.json",
-        JSON.stringify(cv3Credentials, null, 2)
-      );
-      fs.writeFileSync("./store.json", JSON.stringify(store, null, 2));
+      if (username !== "" && password !== "") {
+        fs.writeFileSync(
+          "./cv3-credentials.json",
+          JSON.stringify(cv3Credentials, null, 2)
+        );
+      }
+      if (id !== "" || stagingURL !== "") {
+        fs.writeFileSync("./store.json", JSON.stringify(store, null, 2));
+      }
       exit();
     }
   }
