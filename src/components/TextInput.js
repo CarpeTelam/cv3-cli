@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import chalk from "chalk";
-import { Box, Color, useStdin } from "ink";
+import { Box, Color, Text, useStdin } from "ink";
 
 const ARROW_DOWN = "\u001B[B";
 const ARROW_LEFT = "\u001B[D";
@@ -25,12 +25,16 @@ function TextInput(props) {
   const renderedCursorWidth = props.highlightPastedText ? cursorWidth : 0;
   const mask = props.type === "password" ? "*" : props.mask;
   let renderedValue = props.value;
+  let renderedPlaceholder = props.placeholder;
 
   function handleValue(value) {
     const returnValue = value || props.defaultValue;
-    return props.type === "number" && returnValue !== ""
-      ? parseInt(returnValue)
-      : returnValue;
+    return {
+      [props.name]:
+        props.type === "number" && returnValue !== ""
+          ? parseInt(returnValue)
+          : returnValue
+    };
   }
 
   useEffect(() => {
@@ -43,37 +47,37 @@ function TextInput(props) {
       switch (string) {
         case ARROW_DOWN:
           if (props.onArrowDown) {
-            props.onArrowDown(props.name, handleValue(value));
+            props.onArrowDown(handleValue(value));
           }
           return;
         case ARROW_UP:
           if (props.onArrowUp) {
-            props.onArrowUp(props.name, handleValue(value));
+            props.onArrowUp(handleValue(value));
           }
           return;
         case CTRL_C:
           if (props.onCtrlC) {
-            props.onCtrlC(props.name, handleValue(value));
+            props.onCtrlC(handleValue(value));
           }
           return;
         case ESCAPE:
           if (props.onEscape) {
-            props.onEscape(props.name, handleValue(value));
+            props.onEscape(handleValue(value));
           }
           return;
         case RETURN:
           if (props.onReturn) {
-            props.onReturn(props.name, handleValue(value));
+            props.onReturn(handleValue(value));
           }
           return;
         case SHIFT_TAB:
           if (props.onShiftTab) {
-            props.onShiftTab(props.name, handleValue(value));
+            props.onShiftTab(handleValue(value));
           }
           return;
         case TAB:
           if (props.onTab) {
-            props.onTab(props.name, handleValue(value));
+            props.onTab(handleValue(value));
           }
           return;
         case ARROW_LEFT:
@@ -119,10 +123,10 @@ function TextInput(props) {
         setCursorOffset(value.length);
       }
       if (value !== props.value && props.onChange) {
-        const returnValue = props.onChange(
-          props.name,
-          props.type === "number" && value !== "" ? parseInt(value) : value
-        );
+        const returnValue = props.onChange({
+          [props.name]:
+            props.type === "number" && value !== "" ? parseInt(value) : value
+        });
       }
     }
 
@@ -138,7 +142,7 @@ function TextInput(props) {
   });
 
   if (props.showCursor && !mask && props.focus) {
-    renderedValue = props.value.length > 0 ? "" : chalk.inverse(" ");
+    renderedValue = props.value.length > 0 ? "" : chalk.bgBlackBright(" ");
 
     for (let index = 0; index < props.value.length; index++) {
       const char = props.value.charAt(index);
@@ -146,28 +150,31 @@ function TextInput(props) {
         index >= cursorOffset - renderedCursorWidth &&
         index <= cursorOffset
       ) {
-        renderedValue += chalk.inverse(char);
+        renderedValue += chalk.bgBlackBright(char);
       } else {
         renderedValue += char;
       }
     }
 
     if (props.value.length > 0 && cursorOffset === props.value.length) {
-      renderedValue += chalk.inverse(" ");
+      renderedValue += chalk.bgBlackBright(" ");
     }
   } else if (mask) {
     renderedValue = mask.repeat(props.value.length);
+    renderedPlaceholder = mask.repeat(props.placeholder.length);
   }
 
   return (
     <Box>
       {props.label && (
         <Box marginRight={1}>
-          <Color keyword={props.labelColor}>{props.label}</Color>
+          <Color keyword={props.labelColor}>
+            <Text bold>{props.label}</Text>
+          </Color>
         </Box>
       )}
-      {!hasValue && props.placeholder ? (
-        <Color keyword={props.placeholderColor}>{props.placeholder}</Color>
+      {!hasValue && renderedPlaceholder ? (
+        <Color keyword={props.placeholderColor}>{renderedPlaceholder}</Color>
       ) : (
         <Color keyword={props.inputColor}>{renderedValue}</Color>
       )}
