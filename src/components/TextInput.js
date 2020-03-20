@@ -141,7 +141,7 @@ function TextInput(props) {
     };
   });
 
-  if (props.showCursor && !mask && props.focus) {
+  if (props.focus && props.showCursor && !mask) {
     renderedValue = props.value.length > 0 ? "" : chalk.bgBlackBright(" ");
 
     for (let index = 0; index < props.value.length; index++) {
@@ -155,28 +155,40 @@ function TextInput(props) {
         renderedValue += char;
       }
     }
-
-    if (props.value.length > 0 && cursorOffset === props.value.length) {
-      renderedValue += chalk.bgBlackBright(" ");
-    }
   } else if (mask) {
     renderedValue = mask.repeat(props.value.length);
     renderedPlaceholder = mask.repeat(props.placeholder.length);
+  }
+
+  if (
+    props.focus &&
+    props.value.length > 0 &&
+    cursorOffset === props.value.length
+  ) {
+    renderedValue += chalk.bgBlackBright(" ");
   }
 
   return (
     <Box>
       {props.label && (
         <Box marginRight={1}>
-          <Color keyword={props.labelColor}>
-            <Text bold>{props.label}</Text>
+          <Color
+            keyword={props.labelColor}
+            bold={props.labelBoldOnFocus && props.focus}
+          >
+            {props.label}
           </Color>
         </Box>
       )}
       {!hasValue && renderedPlaceholder ? (
         <Color keyword={props.placeholderColor}>{renderedPlaceholder}</Color>
       ) : (
-        <Color keyword={props.inputColor}>{renderedValue}</Color>
+        <Color
+          keyword={props.inputColor}
+          bold={props.valueBoldOnFocus && props.focus}
+        >
+          {renderedValue}
+        </Color>
       )}
     </Box>
   );
@@ -188,6 +200,7 @@ TextInput.propTypes = {
   highlightPastedText: PropTypes.bool,
   inputColor: PropTypes.string,
   label: PropTypes.string,
+  labelBoldOnFocus: PropTypes.bool,
   labelColor: PropTypes.string,
   mask: PropTypes.string,
   name: PropTypes.string.isRequired,
@@ -200,7 +213,8 @@ TextInput.propTypes = {
   placeholderColor: PropTypes.string,
   showCursor: PropTypes.bool,
   type: PropTypes.string,
-  value: PropTypes.string.isRequired
+  value: PropTypes.string.isRequired,
+  valueBoldOnFocus: PropTypes.bool
 };
 
 TextInput.defaultProps = {
@@ -208,11 +222,13 @@ TextInput.defaultProps = {
   focus: true,
   highlightPastedText: false,
   inputColor: "green",
+  labelBoldOnFocus: true,
   labelColor: "white",
   placeholder: "",
   placeholderColor: "yellow",
   showCursor: true,
-  type: "text"
+  type: "text",
+  valueBoldOnFocus: true
 };
 
 export function UncontrolledTextInput(props) {
