@@ -4,8 +4,7 @@ import fs from "fs";
 import moment from "moment";
 import { AppContext, Box, Color, Text } from "ink";
 
-import JsonContent from "../src/components/JsonContent";
-import TextInput from "../src/components/TextInput";
+import Input from "../src/components/Input";
 
 function loadJSON(path) {
   if (!fs.existsSync(path)) {
@@ -14,13 +13,17 @@ function loadJSON(path) {
   return JSON.parse(fs.readFileSync(path));
 }
 
+const basePath = process.cwd();
+const cv3CredentialsPath = `${basePath}/cv3-credentials.json`;
+const storePath = `${basePath}/store.json`;
+
 const defaultInputs = {
   username: "",
   password: "",
   id: "",
   stagingURL: "",
-  ...loadJSON("./cv3-credentials.json"),
-  ...loadJSON("./store.json")
+  ...loadJSON(cv3CredentialsPath),
+  ...loadJSON(storePath)
 };
 
 /// Init CV3 store repo
@@ -63,27 +66,31 @@ function init() {
     handleNext(input);
     if (focus === fields.length - 1) {
       setFocus(fields.length);
-      const { username, password, id, stagingURL } = inputs;
-      const timestamp = moment().unix();
-      const cv3Credentials = { username, password };
-      const store = { id, stagingURL, timestamp };
-      if (username !== "" && password !== "") {
-        fs.writeFileSync(
-          "./cv3-credentials.json",
-          JSON.stringify(cv3Credentials, null, 2)
-        );
+      if (inputs.username !== "" && inputs.password !== "") {
+        writeFile(cv3CredentialsPath, {
+          username: inputs.username,
+          password: inputs.password
+        });
       }
-      if (id !== "" || stagingURL !== "") {
-        fs.writeFileSync("./store.json", JSON.stringify(store, null, 2));
+      if (inputs.id !== "" || inputs.stagingURL !== "") {
+        writeFile(storePath, {
+          id: inputs.id,
+          stagingURL: inputs.stagingURL,
+          timestamp: moment().unix()
+        });
       }
       exit();
     }
   }
 
+  function writeFile(path, content) {
+    fs.writeFileSync(path, JSON.stringify(content, null, 2));
+  }
+
   return (
     <Box flexDirection="column">
       {fields.map((field, index) => (
-        <TextInput
+        <Input
           defaultValue={defaultInputs[field.name]}
           focus={focus === index}
           key={field.name}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import chalk from "chalk";
-import { Box, Color, Text, useStdin } from "ink";
+import { Box, Color, useStdin } from "ink";
 
 const ARROW_DOWN = "\u001B[B";
 const ARROW_LEFT = "\u001B[D";
@@ -15,7 +15,7 @@ const RETURN = "\x0D";
 const SHIFT_TAB = "\u001B[Z";
 const TAB = "\x09";
 
-function TextInput(props) {
+function Input(props) {
   const [cursorOffset, setCursorOffset] = useState((props.value || "").length);
   const [cursorWidth, setCursorWidth] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
@@ -194,7 +194,7 @@ function TextInput(props) {
   );
 }
 
-TextInput.propTypes = {
+Input.propTypes = {
   defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   focus: PropTypes.bool,
   highlightPastedText: PropTypes.bool,
@@ -217,7 +217,7 @@ TextInput.propTypes = {
   valueBoldOnFocus: PropTypes.bool
 };
 
-TextInput.defaultProps = {
+Input.defaultProps = {
   defaultValue: "",
   focus: true,
   highlightPastedText: false,
@@ -231,9 +231,9 @@ TextInput.defaultProps = {
   valueBoldOnFocus: true
 };
 
-export function UncontrolledTextInput(props) {
+export function UncontrolledInput(props) {
   const [value, setValue] = useState("");
-  return <TextInput {...props} value={value} onChange={setValue} />;
+  return <Input {...props} value={value} onChange={setValue} />;
 }
 
-export default TextInput;
+export default Input;
