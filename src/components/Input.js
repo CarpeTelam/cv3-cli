@@ -56,9 +56,6 @@ function Input(props) {
           }
           return;
         case CTRL_C:
-          if (props.onCtrlC) {
-            props.onCtrlC(handleValue(value));
-          }
           return;
         case ESCAPE:
           if (props.onEscape) {
@@ -204,6 +201,8 @@ Input.propTypes = {
   labelColor: PropTypes.string,
   mask: PropTypes.string,
   name: PropTypes.string.isRequired,
+  onArrowDown: PropTypes.func,
+  onArrowUp: PropTypes.func,
   onChange: PropTypes.func,
   onEscape: PropTypes.func,
   onReturn: PropTypes.func,
