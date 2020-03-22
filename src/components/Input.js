@@ -221,7 +221,7 @@ Input.defaultProps = {
   defaultValue: "",
   focus: true,
   highlightPastedText: false,
-  inputColor: "green",
+  inputColor: "blue",
   labelBoldOnFocus: true,
   labelColor: "white",
   placeholder: "",
