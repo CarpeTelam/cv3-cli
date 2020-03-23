@@ -69,7 +69,6 @@ function init() {
     if (focus === fields.length - 1) {
       setFocus(fields.length);
       writeConfigs();
-      // exit();
     }
   }
 
@@ -108,7 +107,7 @@ function init() {
               {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
             </Color>
             <Color keyword="yellow">
-              ${cv3CredentialsPath} not updated, `}
+              {`${cv3CredentialsPath} not updated, `}
             </Color>
             <Color keyword="red">error: {error.message}</Color>
           </>
@@ -136,7 +135,8 @@ function init() {
             <Color keyword="red">error: {error.message}</Color>
           </>
         );
-      });
+      })
+      .finally(() => exit());
   }
 
   return (
