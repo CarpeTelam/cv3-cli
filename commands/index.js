@@ -12,7 +12,7 @@ import Update from "./update";
 /// CV3 CLI tool for local development
 function App(props) {
   const items = [
-    // { label: "Open Staging URL", value: "open" },
+    { label: "Open Staging URL", value: "open" },
     // { label: "Update Templates", value: "update" },
     // { label: "Extract Zip", value: "extract" },
     // { label: "Clean Repo", value: "clean" },

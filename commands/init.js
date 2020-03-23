@@ -4,14 +4,8 @@ import fs from "fs";
 import moment from "moment";
 import { AppContext, Box, Color, Text } from "ink";
 
+import { loadJSONSync } from "../src/utils.js";
 import Input from "../src/components/Input";
-
-function loadJSON(path) {
-  if (!fs.existsSync(path)) {
-    return {};
-  }
-  return JSON.parse(fs.readFileSync(path));
-}
 
 const basePath = process.cwd();
 const cv3CredentialsPath = `${basePath}/cv3-credentials.json`;
@@ -22,8 +16,8 @@ const defaultInputs = {
   password: "",
   id: "",
   stagingURL: "",
-  ...loadJSON(cv3CredentialsPath),
-  ...loadJSON(storePath)
+  ...loadJSONSync(cv3CredentialsPath),
+  ...loadJSONSync(storePath)
 };
 
 /// Init CV3 store repo
