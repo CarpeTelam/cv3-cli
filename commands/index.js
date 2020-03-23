@@ -1,22 +1,55 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
-import { Box } from "ink";
+import Select from "ink-select-input";
+import { AppContext } from "ink";
+
+import Clean from "./clean";
+import Extract from "./extract";
+import Init from "./init";
+import Open from "./open";
+import Update from "./update";
 
 /// CV3 CLI tool for local development
-function CV3(props) {
-  return <Box>cv3 cli</Box>;
+function App(props) {
+  const items = [
+    // { label: "Open Staging URL", value: "open" },
+    // { label: "Update Templates", value: "update" },
+    // { label: "Extract Zip", value: "extract" },
+    // { label: "Clean Repo", value: "clean" },
+    { label: "Initialize Repo", value: "init" },
+    { label: "Quit", value: "quit" }
+  ];
+
+  const [action, setAction] = useState(
+    <Select items={items} onSelect={handleSelect} />
+  );
+
+  const { exit } = useContext(AppContext);
+
+  function handleSelect({ value }) {
+    switch (value) {
+      case "clean":
+        setAction(<Clean />);
+        break;
+      case "extract":
+        setAction(<Extract />);
+        break;
+      case "init":
+        setAction(<Init />);
+        break;
+      case "open":
+        setAction(<Open />);
+        break;
+      case "update":
+        setAction(<Update />);
+        break;
+      default:
+        exit();
+        break;
+    }
+  }
+
+  return action;
 }
 
-CV3.propTypes = {
-  /// The "color" option can be used to alter the greeting's color
-  color: PropTypes.string,
-  /// The "name" option can be used to alter the greeting
-  name: PropTypes.string
-};
-
-CV3.defaultProps = {
-  color: "blue",
-  name: "Stranger"
-};
-
-export default CV3;
+export default App;
