@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import PropTypes from "prop-types";
 import fs from "fs";
 import moment from "moment";
@@ -30,8 +30,8 @@ const defaultInputs = {
 function init() {
   const [inputs, setInputs] = useState(defaultInputs);
   const [focus, setFocus] = useState(0);
-  const [cv3CredentialsText, setCv3CredentialsText] = useState("");
-  const [storeText, setStoreText] = useState("");
+  const [cv3CredentialsFooter, setCv3CredentialsFooter] = useState("");
+  const [storeFooter, setStoreFooter] = useState("");
   const { exit } = useContext(AppContext);
 
   const fields = [
@@ -68,11 +68,11 @@ function init() {
     handleNext(input);
     if (focus === fields.length - 1) {
       setFocus(fields.length);
-      writeConfigs();
+      writeConfigs().finally(() => exit());
     }
   }
 
-  async function writeConfigs() {
+  function writeConfigs() {
     const { username, password, id, stagingURL } = inputs;
     const timestamp = moment().unix();
 
@@ -82,61 +82,59 @@ function init() {
     const cv3CredentialsPromise =
       username !== "" && password !== ""
         ? fs.promises.writeFile(cv3CredentialsPath, cv3Credentials)
-        : Promise.reject(new Error("username or password blank"));
+        : Promise.reject(new Error("Username and/or Password blank"));
 
     const storePromise =
       id !== "" || stagingURL !== ""
         ? fs.promises.writeFile(storePath, store)
-        : Promise.reject(new Error("id and stagingURL blank"));
+        : Promise.reject(new Error("Store ID and Staging URL blank"));
 
-    cv3CredentialsPromise
-      .then(() => {
-        setCv3CredentialsText(
-          <>
-            <Color blackBright>
-              {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
-            </Color>
-            <Color keyword="green">{cv3CredentialsPath} updated</Color>
-          </>
-        );
-      })
-      .catch(error => {
-        setCv3CredentialsText(
-          <>
-            <Color blackBright>
-              {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
-            </Color>
-            <Color keyword="yellow">
-              {`${cv3CredentialsPath} not updated, `}
-            </Color>
-            <Color keyword="red">error: {error.message}</Color>
-          </>
-        );
-      });
+    return Promise.all([
+      cv3CredentialsPromise
+        .then(() =>
+          handleFooter({
+            path: cv3CredentialsPath,
+            setFooter: setCv3CredentialsFooter
+          })
+        )
+        .catch(error =>
+          handleFooter({
+            path: cv3CredentialsPath,
+            setFooter: setCv3CredentialsFooter,
+            error
+          })
+        ),
+      storePromise
+        .then(() =>
+          handleFooter({ path: storePath, setFooter: setStoreFooter })
+        )
+        .catch(error =>
+          handleFooter({ path: storePath, setFooter: setStoreFooter, error })
+        )
+    ]);
+  }
 
-    storePromise
-      .then(() => {
-        setStoreText(
-          <>
-            <Color blackBright>
-              {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
-            </Color>
-            <Color keyword="green">{storePath} updated</Color>
-          </>
-        );
-      })
-      .catch(error => {
-        setStoreText(
-          <>
-            <Color blackBright>
-              {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
-            </Color>
-            <Color keyword="yellow">{`${storePath} not updated, `}</Color>
+  function handleFooter({ path, setFooter, error }) {
+    setFooter(
+      <Box>
+        <Color blackBright>
+          {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
+        </Color>
+        {error ? (
+          <Fragment>
+            {`${path} `}
+            <Color keyword="yellow">not updated</Color>
+            {", "}
             <Color keyword="red">error: {error.message}</Color>
-          </>
-        );
-      })
-      .finally(() => exit());
+          </Fragment>
+        ) : (
+          <Fragment>
+            {`${path} `}
+            <Color keyword="green">updated</Color>
+          </Fragment>
+        )}
+      </Box>
+    );
   }
 
   return (
@@ -160,8 +158,8 @@ function init() {
           value={String(inputs[field.name])}
         />
       ))}
-      {cv3CredentialsText !== "" && <Box>{cv3CredentialsText}</Box>}
-      {storeText !== "" && <Box>{storeText}</Box>}
+      {cv3CredentialsFooter}
+      {storeFooter}
     </Box>
   );
 }
