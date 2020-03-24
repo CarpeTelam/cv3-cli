@@ -11,6 +11,7 @@
     "url": "https://github.com/CarpeTelam/cv3-cli/issues"
   },
   "dependencies": {
+    "del": "^5.1.0",
     "ink": "^2.7.1",
     "ink-select-input": "^3.1.2",
     "moment": "^2.24.0",

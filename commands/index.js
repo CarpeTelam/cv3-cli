@@ -15,15 +15,13 @@ function App(props) {
     { label: "Open Staging URL", value: "open" },
     // { label: "Update Templates", value: "update" },
     // { label: "Extract Zip", value: "extract" },
-    // { label: "Clean Repo", value: "clean" },
+    { label: "Clean Repo", value: "clean" },
     { label: "Initialize Repo", value: "init" },
     { label: "Quit", value: "quit" }
   ];
+  const defaultAction = <Select items={items} onSelect={handleSelect} />;
 
-  const [action, setAction] = useState(
-    <Select items={items} onSelect={handleSelect} />
-  );
-
+  const [action, setAction] = useState(defaultAction);
   const { exit } = useContext(AppContext);
 
   function handleSelect({ value }) {

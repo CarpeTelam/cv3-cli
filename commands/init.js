@@ -7,25 +7,25 @@ import { AppContext, Box, Color, Text } from "ink";
 import { loadJSONSync } from "../src/utils.js";
 import Input from "../src/components/Input";
 
-const basePath = process.cwd();
-const cv3CredentialsPath = `${basePath}/cv3-credentials.json`;
-const storePath = `${basePath}/store.json`;
-
-const defaultInputs = {
-  username: "",
-  password: "",
-  id: "",
-  stagingURL: "",
-  ...loadJSONSync(cv3CredentialsPath),
-  ...loadJSONSync(storePath)
-};
-
 /// Init CV3 store repo
 function init() {
+  const basePath = process.cwd();
+  const cv3CredentialsPath = `${basePath}/cv3-credentials.json`;
+  const storePath = `${basePath}/store.json`;
+
+  const defaultInputs = {
+    username: "",
+    password: "",
+    id: "",
+    stagingURL: "",
+    ...loadJSONSync(cv3CredentialsPath),
+    ...loadJSONSync(storePath)
+  };
+
   const [inputs, setInputs] = useState(defaultInputs);
   const [focus, setFocus] = useState(0);
-  const [cv3CredentialsFooter, setCv3CredentialsFooter] = useState("");
-  const [storeFooter, setStoreFooter] = useState("");
+  const [cv3CredentialsFooter, setCv3CredentialsFooter] = useState();
+  const [storeFooter, setStoreFooter] = useState();
   const { exit } = useContext(AppContext);
 
   const fields = [
