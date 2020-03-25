@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import Select from "ink-select-input";
-import { AppContext } from "ink";
+import { AppContext, Box, Color } from "ink";
 
 import Clean from "./clean";
 import Extract from "./extract";
@@ -14,7 +14,7 @@ function App(props) {
   const items = [
     { label: "Open Staging URL", value: "open" },
     // { label: "Update Templates", value: "update" },
-    // { label: "Extract Zip", value: "extract" },
+    { label: "Extract Zip", value: "extract" },
     { label: "Clean Repo", value: "clean" },
     { label: "Initialize Repo", value: "init" },
     { label: "Quit", value: "quit" }
@@ -37,6 +37,11 @@ function App(props) {
         setAction(<Update />);
         break;
       default:
+        setAction(
+          <Box>
+            <Color keyword="magenta">Goodbye!</Color>
+          </Box>
+        );
         exit();
         break;
     }
