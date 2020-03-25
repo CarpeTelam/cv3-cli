@@ -19,12 +19,7 @@ function App(props) {
     { label: "Initialize Repo", value: "init" },
     { label: "Quit", value: "quit" }
   ];
-  const defaultAction = <Select items={items} onSelect={handleSelect} />;
-
-  const [action, setAction] = useState(defaultAction);
-  const { exit } = useContext(AppContext);
-
-  function handleSelect({ value }) {
+  const handleSelect = ({ value }) => {
     switch (value) {
       case "clean":
         setAction(<Clean />);
@@ -45,7 +40,11 @@ function App(props) {
         exit();
         break;
     }
-  }
+  };
+  const defaultAction = <Select items={items} onSelect={handleSelect} />;
+
+  const [action, setAction] = useState(defaultAction);
+  const { exit } = useContext(AppContext);
 
   return action;
 }

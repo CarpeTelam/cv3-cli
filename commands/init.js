@@ -4,14 +4,14 @@ import fs from "fs";
 import moment from "moment";
 import { AppContext, Box, Color, Text } from "ink";
 
-import { loadJSONSync } from "../src/utils.js";
+import { loadJSONSync } from "../src/utils";
 import Input from "../src/components/Input";
 
 /// Init CV3 store repo
 function init() {
-  const basePath = process.cwd();
-  const cv3CredentialsPath = `${basePath}/cv3-credentials.json`;
-  const storePath = `${basePath}/store.json`;
+  const root = process.cwd();
+  const cv3CredentialsPath = `${root}/cv3-credentials.json`;
+  const storePath = `${root}/store.json`;
 
   const defaultInputs = {
     username: "",

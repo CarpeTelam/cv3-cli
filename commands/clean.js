@@ -4,25 +4,41 @@ import del from "del";
 import { Box, Color } from "ink";
 
 function clean() {
-  const basePath = process.cwd();
+  const [deletedFiles, setDeletedFiles] = useState([]);
+  const [error, setError] = useState();
+
+  const root = process.cwd();
   const deletePaths = [
-    `${basePath}/extract/store/*.zip`,
-    `${basePath}/extract/bootstrap/bootstrap/`,
-    `${basePath}/extract/bootstrap/*.zip`,
-    `${basePath}/**/.DS_Store`
+    `${root}/extract/store/*.zip`,
+    `${root}/extract/bootstrap/bootstrap/`,
+    `${root}/extract/bootstrap/*.zip`,
+    `${root}/**/.DS_Store`
   ];
 
-  // ToDo: Fix this to use pastel output instead of console.log
-  (async () => {
-    const response = await del(deletePaths);
-    if (response.length > 0) {
-      console.log(`Deleted files: \n${JSON.stringify(response, null, 2)}`);
-    } else {
-      console.log("No files to delete");
+  useEffect(() => {
+    async function deleteFiles() {
+      try {
+        const deletedFiles = await del(deletePaths, { dryRun: true });
+        setDeletedFiles(deletedFiles);
+      } catch (error) {
+        setError(error);
+      }
     }
-  })();
+    deleteFiles();
+  }, []);
 
-  return <Box />;
+  return (
+    <Box flexDirection="column">
+      {deletedFiles.map(deletedFile => (
+        <Box key={deletedFile}>
+          <Color blackBright>
+            {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
+          </Color>
+          {deletedFile} <Color keyword="red">deleted</Color>
+        </Box>
+      ))}
+    </Box>
+  );
 }
 
 export default clean;
