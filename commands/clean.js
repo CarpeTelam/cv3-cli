@@ -29,14 +29,23 @@ function clean() {
 
   return (
     <Box flexDirection="column">
-      {deletedFiles.map(deletedFile => (
-        <Box key={deletedFile}>
+      {deletedFiles.length > 0 ? (
+        deletedFiles.map(deletedFile => (
+          <Box key={deletedFile}>
+            <Color blackBright>
+              {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
+            </Color>
+            {deletedFile} <Color keyword="red">deleted</Color>
+          </Box>
+        ))
+      ) : (
+        <Box>
           <Color blackBright>
             {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
           </Color>
-          {deletedFile} <Color keyword="red">deleted</Color>
+          No files <Color keyword="red">deleted</Color>
         </Box>
-      ))}
+      )}
     </Box>
   );
 }

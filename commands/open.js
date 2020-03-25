@@ -32,8 +32,7 @@ function open() {
       <Color blackBright>
         {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
       </Color>
-      <Color keyword="blue">{store.stagingURL}</Color>
-      {` opening in default browser...`}
+      {store.stagingURL} <Color keyword="blue">opened</Color>
     </Box>
   );
 }
