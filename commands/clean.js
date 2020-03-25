@@ -18,7 +18,7 @@ function clean() {
   useEffect(() => {
     async function deleteFiles() {
       try {
-        const deletedFiles = await del(deletePaths, { dryRun: true });
+        const deletedFiles = await del(deletePaths);
         setDeletedFiles(deletedFiles);
       } catch (error) {
         setError(error);
