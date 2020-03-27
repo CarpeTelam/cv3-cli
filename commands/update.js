@@ -3,7 +3,7 @@ import request from "request-promise";
 import moment from "moment";
 import { jar } from "request";
 import { Box } from "ink";
-import { findIndex } from "lodash";
+import { findIndex, sortBy } from "lodash";
 
 import { useCv3Client } from "../src/hooks";
 
@@ -34,17 +34,20 @@ function update() {
 
   const allTemplates = { ...rawJavaScript, ...rawStylesheets, ...rawTemplates };
 
-  const templates = [].concat(
-    ...Object.keys(allTemplates).map(name => [
-      ...Object.values(allTemplates[name]).map(template => ({
-        ...template,
-        last_modified: moment(
-          template.last_modified,
-          "MM-DD-YYYY HH:mm:ss"
-        ).unix(),
-        categoryID: categories[findIndex(categories, { name: name })].id
-      }))
-    ])
+  const templates = sortBy(
+    [].concat(
+      ...Object.keys(allTemplates).map(name => [
+        ...Object.values(allTemplates[name]).map(template => ({
+          ...template,
+          last_modified: moment(
+            template.last_modified,
+            "MM-DD-YYYY HH:mm:ss"
+          ).unix(),
+          categoryID: categories[findIndex(categories, { name: name })].id
+        }))
+      ])
+    ),
+    ["file"]
   );
 
   return (
