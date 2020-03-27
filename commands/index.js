@@ -13,7 +13,7 @@ import Update from "./update";
 function App(props) {
   const items = [
     { label: "Open Staging URL", value: "open" },
-    // { label: "Update Templates", value: "update" },
+    { label: "Update Templates", value: "update" },
     { label: "Extract Zip", value: "extract" },
     { label: "Clean Repo", value: "clean" },
     { label: "Initialize Repo", value: "init" },
