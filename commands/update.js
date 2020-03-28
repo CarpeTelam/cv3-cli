@@ -43,7 +43,7 @@ function update() {
             template.last_modified,
             "MM-DD-YYYY HH:mm:ss"
           ).unix(),
-          categoryID: categories[findIndex(categories, { name: name })].id
+          categoryID: categories[findIndex(categories, { name })].id
         }))
       ])
     ),

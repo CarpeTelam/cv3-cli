@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import extractZip from "extract-zip";
+import React, { Fragment, useContext, useEffect, useState } from "react";
+import AdmZip from "adm-zip";
+import path from "path";
 import fs from "fs";
 import glob from "glob-promise";
 import moment from "moment";
@@ -12,8 +13,8 @@ import { loadJSONSync } from "../src/utils";
 function extract() {
   const [items, setItems] = useState([]);
   const [globError, setGlobError] = useState("");
-  const [extractZipError, setExtractZipError] = useState("");
-  const [footer, setFooter] = useState();
+  const [extractError, setExtractError] = useState("");
+  const [extractedText, setExtractedText] = useState("");
   const { exit } = useContext(AppContext);
 
   const root = process.cwd();
@@ -54,37 +55,67 @@ function extract() {
     processFiles("/extract/store");
   }, []);
 
-  const handleSelect = ({ value }) => {
-    extractZip(value, { dir: `${root}/store` }, async error => {
-      if (error) {
-        setExtractError(error);
-        return;
-      }
-      const timestamp = moment().unix();
-      await fs.promises.writeFile(
-        storePath,
-        JSON.stringify({ ...store, timestamp }, null, 2)
-      );
-      setFooter(
-        <Box>
-          <Color blackBright>
-            {`${moment(timestamp, "X").format("YYYY-MM-D HH:mm:ss.SSS")} `}
-          </Color>
-          {value} <Color keyword="blue">extracted</Color>
-        </Box>
-      );
-      exit();
-    });
+  async function getFiles(dir) {
+    const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
+    const files = await Promise.all(
+      dirents.map(dirent => {
+        const resolved = path.resolve(dir, dirent.name);
+        const { mtime } = fs.statSync(resolved);
+        return dirent.isDirectory()
+          ? getFiles(resolved)
+          : {
+              path: resolved.replace(root, ""),
+              modified: moment(mtime).unix()
+            };
+      })
+    );
+    return [].concat(...files);
+  }
+
+  const handleSelect = async ({ value }) => {
+    const zip = new AdmZip(value);
+
+    try {
+      zip.extractAllTo(`${root}/store`, true);
+    } catch (error) {
+      setExtractError(error);
+    }
+
+    const files = await getFiles(`${root}/store`);
+    await fs.promises.writeFile(
+      `${root}/modified-snapshot.json`,
+      JSON.stringify(files, null, 2)
+    );
+
+    const timestamp = moment().unix();
+    await fs.promises.writeFile(
+      storePath,
+      JSON.stringify({ ...store, timestamp }, null, 2)
+    );
+
+    setExtractedText(
+      <Box>
+        <Color blackBright>
+          {`${moment(timestamp, "X").format("YYYY-MM-D HH:mm:ss.SSS")} `}
+        </Color>
+        {value} <Color keyword="blue">extracted</Color>
+      </Box>
+    );
+
+    exit();
   };
 
   return (
-    <Box flexDirection="column">
+    <Fragment>
       {items.length > 0 ? (
-        <Box>
-          Select a file to extract below:
-          <Select items={items} onSelect={handleSelect} />
-          {footer}
-        </Box>
+        !extractedText ? (
+          <Box flexDirection="column">
+            Select a file to extract below:
+            <Select items={items} onSelect={handleSelect} />
+          </Box>
+        ) : (
+          extractedText
+        )
       ) : (
         <Box>
           <Color blackBright>
@@ -93,7 +124,7 @@ function extract() {
           No files <Color keyword="blue">extracted</Color>
         </Box>
       )}
-    </Box>
+    </Fragment>
   );
 }
 
