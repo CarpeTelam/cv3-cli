@@ -58,5 +58,5 @@
     "dev": "nodemon --watch commands --watch src --exec yarn build",
     "prepare": "yarn build"
   },
-  "version": "0.6.0"
+  "version": "0.7.0"
 }
