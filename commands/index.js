@@ -41,7 +41,6 @@ function App(props) {
         break;
       default:
         setAction(<Quit />);
-        break;
     }
   };
 
