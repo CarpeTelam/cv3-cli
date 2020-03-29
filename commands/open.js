@@ -1,38 +1,26 @@
 import React from "react";
-import moment from "moment";
 import openBrowser from "open";
 import { Box, Color } from "ink";
-import { isEmpty } from "lodash";
 
-import { loadJSONSync } from "../src/utils";
+import { useLoadJSON } from "../src/hooks";
+import { Timestamp } from "../src/components";
 
 function open() {
   const root = process.cwd();
-  const storePath = `${root}/store.json`;
-  const store = loadJSONSync(storePath);
+  const storeConfigsPath = `${root}/store-config.json`;
+  const [storeConfigs, storeConfigsError] = useLoadJSON(storeConfigsPath);
 
-  if (isEmpty(store) || store.stagingURL === "") {
-    return (
-      <Box flexDirection="column">
-        <Box>
-          {storePath} <Color keyword="red">not found</Color>
-        </Box>
-        <Box>
-          Please run <Color keyword="blue">cv3 init</Color> to create the proper
-          config files.
-        </Box>
-      </Box>
-    );
+  if (storeConfigsError) {
+    return <Color keyword="red">{storeConfigsError.message}</Color>;
   }
 
-  openBrowser(store.stagingURL);
+  openBrowser(storeConfigs.stagingURL);
 
   return (
     <Box>
-      <Color blackBright>
-        {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
-      </Color>
-      {store.stagingURL} <Color keyword="blue">opened</Color>
+      <Timestamp />
+      {` ${storeConfigs.stagingURL} `}
+      <Color keyword="blue">opened</Color>
     </Box>
   );
 }

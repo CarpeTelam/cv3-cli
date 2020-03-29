@@ -5,10 +5,11 @@ import { jar } from "request";
 import { Box } from "ink";
 import { findIndex, sortBy } from "lodash";
 
-import { useCv3Client } from "../src/hooks";
+import { useCV3API } from "../src/hooks";
+import { Timestamp } from "../src/components";
 
 function update() {
-  const [response, error] = useCv3Client({
+  const [response, error] = useCV3API({
     body: {
       javascript_files: { templates: {} },
       other_files: { templates: {} },

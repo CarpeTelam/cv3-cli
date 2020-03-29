@@ -1,3 +1,5 @@
-import useCv3Client from "./useCv3Client";
+import useCV3API from "./use-cv3-api";
+import useDel from "./use-del";
+import useLoadJSON from "./use-load-json";
 
-export { useCv3Client };
+export { useCV3API, useDel, useLoadJSON };

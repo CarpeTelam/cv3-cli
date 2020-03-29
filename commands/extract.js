@@ -8,7 +8,8 @@ import { isEmpty } from "lodash";
 import { AppContext, Box, Color } from "ink";
 import Select from "ink-select-input";
 
-import { loadJSONSync } from "../src/utils";
+import { useLoadJSON } from "../src/hooks";
+import { Timestamp } from "../src/components";
 
 function extract() {
   const [items, setItems] = useState([]);
@@ -18,21 +19,11 @@ function extract() {
   const { exit } = useContext(AppContext);
 
   const root = process.cwd();
-  const storePath = `${root}/store.json`;
-  const store = loadJSONSync(storePath);
+  const storeConfigsPath = `${root}/store-config.json`;
+  const [storeConfigs, storeConfigsError] = useLoadJSON(storeConfigsPath);
 
-  if (isEmpty(store)) {
-    return (
-      <Box flexDirection="column">
-        <Box>
-          {storePath} <Color keyword="red">not found</Color>
-        </Box>
-        <Box>
-          Please run <Color keyword="blue">cv3 init</Color> to create the proper
-          config files.
-        </Box>
-      </Box>
-    );
+  if (storeConfigsError) {
+    return <Color keyword="red">{storeConfigsError.message}</Color>;
   }
 
   useEffect(() => {
@@ -95,10 +86,7 @@ function extract() {
 
     setExtractedText(
       <Box>
-        <Color blackBright>
-          {`${moment(timestamp, "X").format("YYYY-MM-D HH:mm:ss.SSS")} `}
-        </Color>
-        {value} <Color keyword="blue">extracted</Color>
+        <Timestamp /> {value} <Color keyword="blue">extracted</Color>
       </Box>
     );
 
@@ -118,10 +106,8 @@ function extract() {
         )
       ) : (
         <Box>
-          <Color blackBright>
-            {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
-          </Color>
-          No files <Color keyword="blue">extracted</Color>
+          <Timestamp />
+          No files to <Color keyword="yellow">extract</Color>
         </Box>
       )}
     </Fragment>

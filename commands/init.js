@@ -2,24 +2,27 @@ import React, { Fragment, useContext, useState } from "react";
 import PropTypes from "prop-types";
 import fs from "fs";
 import moment from "moment";
-import { AppContext, Box, Color, Text } from "ink";
+import { AppContext, Box, Color } from "ink";
 
-import { loadJSONSync } from "../src/utils";
-import Input from "../src/components/Input";
+import { useLoadJSON } from "../src/hooks";
+import { Input, Timestamp } from "../src/components";
 
 /// Init CV3 store repo
 function init() {
   const root = process.cwd();
   const cv3CredentialsPath = `${root}/cv3-credentials.json`;
-  const storePath = `${root}/store.json`;
+  const storeConfigsPath = `${root}/store-config.json`;
+
+  const [cv3Credentials, cv3CredentialsError] = useLoadJSON(cv3CredentialsPath);
+  const [storeConfigs, storeConfigsError] = useLoadJSON(storeConfigsPath);
 
   const defaultInputs = {
     username: "",
     password: "",
     id: "",
     stagingURL: "",
-    ...loadJSONSync(cv3CredentialsPath),
-    ...loadJSONSync(storePath)
+    ...cv3Credentials,
+    ...storeConfigs
   };
 
   const [inputs, setInputs] = useState(defaultInputs);
@@ -71,16 +74,16 @@ function init() {
     const timestamp = moment().unix();
 
     const cv3Credentials = JSON.stringify({ username, password }, null, 2);
-    const store = JSON.stringify({ id, stagingURL, timestamp }, null, 2);
+    const storeConfigs = JSON.stringify({ id, stagingURL, timestamp }, null, 2);
 
     const cv3CredentialsPromise =
       username !== "" && password !== ""
         ? fs.promises.writeFile(cv3CredentialsPath, cv3Credentials)
         : Promise.reject(new Error("Username and/or Password blank"));
 
-    const storePromise =
+    const storeConfigsPromise =
       id !== "" || stagingURL !== ""
-        ? fs.promises.writeFile(storePath, store)
+        ? fs.promises.writeFile(storeConfigsPath, storeConfigs)
         : Promise.reject(new Error("Store ID and Staging URL blank"));
 
     return Promise.all([
@@ -98,12 +101,16 @@ function init() {
             error
           })
         ),
-      storePromise
+      storeConfigsPromise
         .then(() =>
-          handleFooter({ path: storePath, setFooter: setStoreFooter })
+          handleFooter({ path: storeConfigsPath, setFooter: setStoreFooter })
         )
         .catch(error =>
-          handleFooter({ path: storePath, setFooter: setStoreFooter, error })
+          handleFooter({
+            path: storeConfigsPath,
+            setFooter: setStoreFooter,
+            error
+          })
         )
     ]);
   }
@@ -111,9 +118,7 @@ function init() {
   function handleFooter({ path, setFooter, error }) {
     setFooter(
       <Box>
-        <Color blackBright>
-          {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
-        </Color>
+        <Timestamp />
         {error ? (
           <Fragment>
             {`${path} `}

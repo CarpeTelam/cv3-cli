@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import request from "request-promise";
 import { jar } from "request";
 
-import { loadJSONSync } from "../utils";
+import useLoadJSON from "./use-load-json";
 
 function useCv3Client(defaultResponse = {}, defaultError) {
   const [response, setResponse] = useState(defaultResponse);
@@ -10,10 +10,10 @@ function useCv3Client(defaultResponse = {}, defaultError) {
 
   const root = process.cwd();
   const cv3CredentialsPath = `${root}/cv3-credentials.json`;
-  const storePath = `${root}/store.json`;
+  const storeConfigsPath = `${root}/store-config.json`;
 
-  const cv3Credentials = loadJSONSync(cv3CredentialsPath);
-  const store = loadJSONSync(storePath);
+  const [cv3Credentials, cv3CredentialsError] = useLoadJSON(cv3CredentialsPath);
+  const [storeConfigs, storeConfigsError] = useLoadJSON(storeConfigsPath);
 
   useEffect(() => {
     async function fetchURL() {
@@ -44,7 +44,7 @@ function useCv3Client(defaultResponse = {}, defaultError) {
             json: true,
             method: "GET",
             resolveWithFullResponse: true,
-            uri: `https://store.commercev3.com/GetData/template_list/${store.id}`
+            uri: `https://store.commercev3.com/GetData/template_list/${storeConfigs.id}`
           })
         );
       } catch (error) {

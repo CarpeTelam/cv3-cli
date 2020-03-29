@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Select from "ink-select-input";
-import { AppContext, Box, Color } from "ink";
+import { Box, Color } from "ink";
 
 import Clean from "./clean";
 import Extract from "./extract";
@@ -9,9 +9,11 @@ import Init from "./init";
 import Open from "./open";
 import Update from "./update";
 
+import Quit from "../src/components/Quit";
+
 /// CV3 CLI tool for local development
 function App(props) {
-  const items = [
+  const commands = [
     { label: "Open Staging URL", value: "open" },
     { label: "Update Templates", value: "update" },
     { label: "Extract Zip", value: "extract" },
@@ -19,6 +21,7 @@ function App(props) {
     { label: "Initialize Repo", value: "init" },
     { label: "Quit", value: "quit" }
   ];
+
   const handleSelect = ({ value }) => {
     switch (value) {
       case "clean":
@@ -37,19 +40,14 @@ function App(props) {
         setAction(<Update />);
         break;
       default:
-        setAction(
-          <Box>
-            <Color keyword="magenta">Goodbye!</Color>
-          </Box>
-        );
-        exit();
+        setAction(<Quit />);
         break;
     }
   };
-  const defaultAction = <Select items={items} onSelect={handleSelect} />;
+
+  const defaultAction = <Select items={commands} onSelect={handleSelect} />;
 
   const [action, setAction] = useState(defaultAction);
-  const { exit } = useContext(AppContext);
 
   return action;
 }
