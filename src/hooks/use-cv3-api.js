@@ -4,7 +4,7 @@ import { jar } from "request";
 
 import useLoadJSON from "./use-load-json";
 
-function useCv3Client(defaultResponse = {}, defaultError) {
+function useCv3Api(defaultResponse = {}, defaultError) {
   const [response, setResponse] = useState(defaultResponse);
   const [error, setError] = useState(defaultError);
 
@@ -58,4 +58,4 @@ function useCv3Client(defaultResponse = {}, defaultError) {
   return [response, error];
 }
 
-export default useCv3Client;
+export default useCv3Api;
