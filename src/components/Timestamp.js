@@ -1,11 +1,26 @@
 import React from "react";
+import PropTypes from "prop-types";
 import moment from "moment";
-import { Color } from "ink";
+import { Box, Color } from "ink";
 
-function Timestamp() {
+function Timestamp(props) {
   return (
-    <Color blackBright>{`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}</Color>
+    <Box>
+      <Color blackBright>
+        {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
+      </Color>
+      {props.message && `${props.message} `}
+      {props.action && (
+        <Color keyword={props.actionColor}>{props.action}</Color>
+      )}
+    </Box>
   );
 }
+
+Timestamp.propTypes = {
+  action: PropTypes.string,
+  actionColor: PropTypes.string,
+  message: PropTypes.string
+};
 
 export default Timestamp;

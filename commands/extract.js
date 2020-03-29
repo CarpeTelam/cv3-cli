@@ -85,9 +85,7 @@ function extract() {
     );
 
     setExtractedText(
-      <Box>
-        <Timestamp /> {value} <Color keyword="blue">extracted</Color>
-      </Box>
+      <Timestamp action="extracted" actionColor="blue" message={value} />
     );
 
     exit();
@@ -105,10 +103,11 @@ function extract() {
           extractedText
         )
       ) : (
-        <Box>
-          <Timestamp />
-          No files to <Color keyword="yellow">extract</Color>
-        </Box>
+        <Timestamp
+          action="extract"
+          actionColor="yellow"
+          message="No files to"
+        />
       )}
     </Fragment>
   );

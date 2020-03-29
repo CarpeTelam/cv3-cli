@@ -5,7 +5,7 @@ import { useDel } from "../src/hooks";
 import { Timestamp } from "../src/components/";
 
 function clean() {
-  const [files, error] = useDel([
+  const [deletedPaths, deletedError] = useDel([
     "./extract/store/*.zip",
     "./extract/bootstrap/bootstrap/",
     "./extract/bootstrap/*.zip"
@@ -13,16 +13,17 @@ function clean() {
 
   return (
     <Box flexDirection="column">
-      {files.length > 0 ? (
-        files.map(file => (
-          <Box key={file}>
-            <Timestamp /> {file} <Color keyword="red">deleted</Color>
-          </Box>
+      {deletedPaths.length > 0 ? (
+        deletedPaths.map(deletedPath => (
+          <Timestamp
+            action="deleted"
+            actionColor="red"
+            key={deletedPath}
+            message={deletedPath}
+          />
         ))
       ) : (
-        <Box>
-          <Timestamp /> No files to <Color keyword="yellow">delete</Color>
-        </Box>
+        <Timestamp action="delete" actionColor="yellow" message="No files to" />
       )}
     </Box>
   );

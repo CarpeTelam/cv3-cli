@@ -17,11 +17,11 @@ function open() {
   openBrowser(storeConfigs.stagingURL);
 
   return (
-    <Box>
-      <Timestamp />
-      {` ${storeConfigs.stagingURL} `}
-      <Color keyword="blue">opened</Color>
-    </Box>
+    <Timestamp
+      action="opened"
+      actionColor="blue"
+      message={storeConfigs.stagingURL}
+    />
   );
 }
 

@@ -118,19 +118,15 @@ function init() {
   function handleFooter({ path, setFooter, error }) {
     setFooter(
       <Box>
-        <Timestamp />
         {error ? (
-          <Fragment>
-            {`${path} `}
-            <Color keyword="yellow">not updated</Color>
-            {", "}
-            <Color keyword="red">error: {error.message}</Color>
-          </Fragment>
+          <Timestamp
+            action={`not updated, error: ${error.message}`}
+            actionColor="red"
+            key={path}
+            message={path}
+          />
         ) : (
-          <Fragment>
-            {`${path} `}
-            <Color keyword="green">updated</Color>
-          </Fragment>
+          <Timestamp action="updated" actionColor="green" message={path} />
         )}
       </Box>
     );
