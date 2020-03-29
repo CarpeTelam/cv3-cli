@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import Select from "ink-select-input";
-import { Box, Color } from "ink";
 
 import Clean from "./clean";
 import Extract from "./extract";
@@ -45,7 +43,6 @@ function App(props) {
   };
 
   const defaultAction = <Select items={commands} onSelect={handleSelect} />;
-
   const [action, setAction] = useState(defaultAction);
 
   return action;
