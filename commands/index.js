@@ -7,7 +7,7 @@ import Init from "./init";
 import Open from "./open";
 import Update from "./update";
 
-import Quit from "../src/components/Quit";
+import Timestamp from "../src/components/Timestamp";
 
 /// CV3 CLI tool for local development
 function App(props) {
@@ -38,7 +38,7 @@ function App(props) {
         setAction(<Update />);
         break;
       default:
-        setAction(<Quit />);
+        setAction(<Timestamp action="Goodbye!" actionColor="magenta" />);
     }
   };
 
