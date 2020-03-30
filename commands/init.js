@@ -9,9 +9,8 @@ import { Input, Timestamp } from "../src/components";
 
 /// Init CV3 store repo
 function init() {
-  const root = process.cwd();
-  const cv3CredentialsPath = `${root}/cv3-credentials.json`;
-  const storeConfigsPath = `${root}/store-config.json`;
+  const cv3CredentialsPath = `${process.cwd()}/cv3-credentials.json`;
+  const storeConfigsPath = `${process.cwd()}/store-configs.json`;
 
   const [cv3Credentials, cv3CredentialsError] = useLoadJSON(cv3CredentialsPath);
   const [storeConfigs, storeConfigsError] = useLoadJSON(storeConfigsPath);

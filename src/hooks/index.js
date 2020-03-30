@@ -1,5 +1,5 @@
-import useCV3API from "./use-cv3-api";
+import useCV3GetData from "./use-cv3-get-data";
 import useDel from "./use-del";
 import useLoadJSON from "./use-load-json";
 
-export { useCV3API, useDel, useLoadJSON };
+export { useCV3GetData, useDel, useLoadJSON };
