@@ -2,7 +2,7 @@ import React from "react";
 import { Box } from "ink";
 
 import { useCV3GetData } from "../src/hooks";
-import { Timestamp } from "../src/components";
+import { Loading, Timestamp } from "../src/components";
 
 function update() {
   const [state, setPath] = useCV3GetData(
@@ -10,12 +10,16 @@ function update() {
       view: "template_edit",
       slug: "_header.tpl"
     },
-    { data: { template: "" } }
+    { body: { template: "" } }
   );
 
   return (
     <Box flexDirection="column">
-      <Timestamp message={state.data.template} />
+      {state.isLoading ? (
+        <Loading />
+      ) : (
+        <Timestamp message={state.response.body.template} />
+      )}
     </Box>
   );
 }

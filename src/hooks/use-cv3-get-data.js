@@ -9,7 +9,12 @@ function getDataReducer(state, action) {
     case "FETCH_INIT":
       return { ...state, error: false, isLoading: true };
     case "FETCH_SUCCESS":
-      return { ...state, data: action.payload, error: false, isLoading: false };
+      return {
+        ...state,
+        error: false,
+        isLoading: false,
+        response: action.payload
+      };
     case "FETCH_FAILURE":
       return { ...state, error: action.payload, isLoading: false };
     default:
@@ -17,7 +22,7 @@ function getDataReducer(state, action) {
   }
 }
 
-function useCV3GetData(initialPath, initialData) {
+function useCV3GetData(initialPath, initialResponse) {
   const [path, setPath] = useState(initialPath);
 
   const [cv3Credentials, cv3CredentialsError] = useLoadJSON(
@@ -28,9 +33,9 @@ function useCV3GetData(initialPath, initialData) {
   );
 
   const [state, dispatch] = useReducer(getDataReducer, {
-    isLoading: false,
     error: false,
-    data: initialData
+    isLoading: true,
+    response: initialResponse
   });
 
   useEffect(() => {
@@ -65,7 +70,7 @@ function useCV3GetData(initialPath, initialData) {
           resolveWithFullResponse: true,
           uri: `https://store.commercev3.com/GetData/${path.view}/${storeConfigs.id}/${path.slug}`
         });
-        dispatch({ type: "FETCH_SUCCESS", payload: response.body });
+        dispatch({ type: "FETCH_SUCCESS", payload: response });
       } catch (error) {
         dispatch({ type: "FETCH_FAILURE", payload: error });
       }
