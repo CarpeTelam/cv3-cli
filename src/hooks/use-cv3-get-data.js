@@ -17,14 +17,8 @@ function getDataReducer(state, action) {
   }
 }
 
-function useCV3GetData(initialView, initialSlug, initialData) {
-  const [view, setView] = useState(initialView);
-  const [slug, setSlug] = useState(initialSlug);
-
-  function setURL(props) {
-    setView(props.view);
-    setSlug(props.slug);
-  }
+function useCV3GetData(initialPath, initialData) {
+  const [path, setPath] = useState(initialPath);
 
   const [cv3Credentials, cv3CredentialsError] = useLoadJSON(
     `${process.cwd()}/cv3-credentials.json`
@@ -69,7 +63,7 @@ function useCV3GetData(initialView, initialSlug, initialData) {
           json: true,
           method: "GET",
           resolveWithFullResponse: true,
-          uri: `https://store.commercev3.com/GetData/${view}/${storeConfigs.id}/${slug}`
+          uri: `https://store.commercev3.com/GetData/${path.view}/${storeConfigs.id}/${path.slug}`
         });
         dispatch({ type: "FETCH_SUCCESS", payload: response.body });
       } catch (error) {
@@ -78,9 +72,9 @@ function useCV3GetData(initialView, initialSlug, initialData) {
     }
 
     getData();
-  }, [view, slug]);
+  }, [path]);
 
-  return [state, setURL];
+  return [state, setPath];
 }
 
 export default useCV3GetData;

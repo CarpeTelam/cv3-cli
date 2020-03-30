@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
-import request from "request-promise";
-import moment from "moment";
-import { jar } from "request";
+import React from "react";
 import { Box } from "ink";
-import { findIndex, sortBy } from "lodash";
 
 import { useCV3GetData } from "../src/hooks";
 import { Timestamp } from "../src/components";
 
 function update() {
-  const [state, setURL] = useCV3GetData("template_edit", "_header.tpl");
+  const [state, setPath] = useCV3GetData(
+    {
+      view: "template_edit",
+      slug: "_header.tpl"
+    },
+    { data: { template: "" } }
+  );
 
-  console.log(state);
-
-  return <Box flexDirection="column"></Box>;
+  return (
+    <Box flexDirection="column">
+      <Timestamp message={state.data.template} />
+    </Box>
+  );
 }
 
 export default update;

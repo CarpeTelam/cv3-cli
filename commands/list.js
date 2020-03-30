@@ -9,12 +9,15 @@ import { useCV3GetData } from "../src/hooks";
 import { Timestamp } from "../src/components";
 
 function list() {
-  const [state, setURL] = useCV3GetData("template_list", null, {
-    javascript_files: { templates: {} },
-    other_files: { templates: {} },
-    stylesheets: { templates: {} },
-    template_list: { html_categories: {}, templates: {} }
-  });
+  const [state, setPath] = useCV3GetData(
+    { view: "template_list" },
+    {
+      javascript_files: { templates: {} },
+      other_files: { templates: {} },
+      stylesheets: { templates: {} },
+      template_list: { html_categories: {}, templates: {} }
+    }
+  );
 
   const {
     javascript_files: { templates: rawJavaScript },
