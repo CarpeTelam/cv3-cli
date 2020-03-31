@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import request from "request-promise";
 import { jar } from "request";
 
@@ -22,8 +22,8 @@ function getDataReducer(state, action) {
   }
 }
 
-function useCV3GetData(initialPath, initialResponse) {
-  const [path, setPath] = useState(initialPath);
+function useCV3GetData(initialInfo, initialResponse) {
+  const [info, setInfo] = useState(initialInfo);
 
   const [cv3Credentials, cv3CredentialsError] = useLoadJSON(
     `${process.cwd()}/cv3-credentials.json`
@@ -52,9 +52,10 @@ function useCV3GetData(initialPath, initialResponse) {
             password: cv3Credentials.password
           },
           headers: {
-            "User-Agent": "CV3 CLI: Update Template"
+            "User-Agent": "CV3 CLI: Get Data"
           },
           jar: cookieJar,
+          json: true,
           method: "POST",
           resolveWithFullResponse: true,
           simple: false,
@@ -62,24 +63,25 @@ function useCV3GetData(initialPath, initialResponse) {
         });
         const response = await request({
           headers: {
-            "User-Agent": "CV3 CLI: Update Template"
+            "User-Agent": "CV3 CLI: Get Data"
           },
           jar: cookieJar,
           json: true,
           method: "GET",
           resolveWithFullResponse: true,
-          uri: `https://store.commercev3.com/GetData/${path.view}/${storeConfigs.id}/${path.slug}`
+          simple: false,
+          uri: `https://store.commercev3.com/GetData/${info.view}/${storeConfigs.id}/${info.slug}`
         });
-        dispatch({ type: "FETCH_SUCCESS", payload: response });
+        dispatch({ type: "FETCH_SUCCESS", payload: response.body });
       } catch (error) {
         dispatch({ type: "FETCH_FAILURE", payload: error });
       }
     }
 
     getData();
-  }, [path]);
+  }, [info]);
 
-  return [state, setPath];
+  return [state, setInfo];
 }
 
 export default useCV3GetData;

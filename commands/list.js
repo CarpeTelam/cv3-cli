@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import request from "request-promise";
 import moment from "moment";
 import { jar } from "request";
@@ -6,7 +6,7 @@ import { Box } from "ink";
 import { findIndex, sortBy } from "lodash";
 
 import { useCV3GetData } from "../src/hooks";
-import { Timestamp } from "../src/components";
+import { Loading, Timestamp } from "../src/components";
 
 function list() {
   const [state, setPath] = useCV3GetData(
@@ -23,7 +23,7 @@ function list() {
     javascript_files: { templates: rawJavaScript },
     stylesheets: { templates: rawStylesheets },
     template_list: { html_categories: rawCategories, templates: rawTemplates }
-  } = state.data;
+  } = state.response;
 
   const categories = [
     ...Object.keys(rawCategories).map(name => ({
@@ -53,16 +53,24 @@ function list() {
   );
 
   return (
-    <Box flexDirection="column">
-      {templates.map(template => (
-        <Box key={template.file}>
-          <Box width={40}>{template.file}</Box>
-          <Box>
-            {moment(template.last_modified, "X").format("YYYY-MM-DD HH:mm:ss")}
-          </Box>
+    <Fragment>
+      {state.isLoading ? (
+        <Loading />
+      ) : (
+        <Box flexDirection="column">
+          {templates.map(template => (
+            <Box key={template.file}>
+              <Box width={40}>{template.file}</Box>
+              <Box>
+                {moment(template.last_modified, "X").format(
+                  "YYYY-MM-DD HH:mm:ss"
+                )}
+              </Box>
+            </Box>
+          ))}
         </Box>
-      ))}
-    </Box>
+      )}
+    </Fragment>
   );
 }
 
