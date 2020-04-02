@@ -8,8 +8,9 @@ import { isEmpty } from "lodash";
 import { AppContext, Box, Color } from "ink";
 import Select from "ink-select-input";
 
-import { useLoadJSON } from "../src/hooks";
 import { Timestamp } from "../src/components";
+import { useLoadJSON } from "../src/hooks";
+import { checkStoreConfigs, updateStoreConfigs } from "../src/utils";
 
 async function getFiles(dir) {
   const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
@@ -35,8 +36,7 @@ function extract() {
   const [extractedText, setExtractedText] = useState("");
   const { exit } = useContext(AppContext);
 
-  const storeConfigsPath = `${process.cwd()}/store-configs.json`;
-  const [storeConfigs, storeConfigsError] = useLoadJSON(storeConfigsPath);
+  const [storeConfigs, storeConfigsError] = checkStoreConfigs();
 
   if (storeConfigsError) {
     return <Color keyword="red">{storeConfigsError.message}</Color>;
@@ -79,11 +79,7 @@ function extract() {
       JSON.stringify(files, null, 2)
     );
 
-    const timestamp = moment().unix();
-    await fs.promises.writeFile(
-      storePath,
-      JSON.stringify({ ...store, timestamp }, null, 2)
-    );
+    await updateStorecConfigs(moment().unix());
 
     setExtractedText(
       <Timestamp action="extracted" actionColor="blue" message={value} />
