@@ -7,7 +7,7 @@ function Timestamp(props) {
   return (
     <Box>
       <Color blackBright>
-        {`${moment().format("YYYY-MM-D HH:mm:ss.SSS")} `}
+        {`${moment().format("YYYY-MM-DD HH:mm:ss.SSS")} `}
       </Color>
       {props.message && `${props.message} `}
       {props.action && (

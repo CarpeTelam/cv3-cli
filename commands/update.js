@@ -19,6 +19,7 @@ function update() {
           extension: "tpl"
         });
         setFiles(modifiedFiles);
+        await updateStoreConfigs();
 
         await Promise.all(
           modifiedFiles.forEach(async file => {
@@ -26,7 +27,6 @@ function update() {
               filename: file.filename,
               template: file.template
             });
-            updateStoreConfigs();
             setResponses({
               ...responses,
               [file.path]: response
