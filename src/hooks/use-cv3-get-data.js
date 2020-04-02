@@ -42,37 +42,34 @@ function useCV3GetData(initialInfo, initialResponse) {
     async function getData() {
       dispatch({ type: "FETCH_INIT" });
 
-      let cookieJar = jar();
+      const options = {
+        followAllRedirects: true,
+        headers: {
+          "User-Agent": "CV3 CLI: Get Data"
+        },
+        jar: jar(),
+        json: true,
+        resolveWithFullResponse: true,
+        simple: false
+      };
 
       try {
         await request({
+          ...options,
           form: {
             action: "Login",
             username: cv3Credentials.username,
             password: cv3Credentials.password
           },
-          headers: {
-            "User-Agent": "CV3 CLI: Get Data"
-          },
-          jar: cookieJar,
-          json: true,
           method: "POST",
-          resolveWithFullResponse: true,
-          simple: false,
           uri: "https://store.commercev3.com"
         });
         const response = await request({
-          headers: {
-            "User-Agent": "CV3 CLI: Get Data"
-          },
-          jar: cookieJar,
-          json: true,
+          ...options,
           method: "GET",
-          resolveWithFullResponse: true,
-          simple: false,
           uri: `https://store.commercev3.com/GetData/${info.view}/${storeConfigs.id}/${info.slug}`
         });
-        dispatch({ type: "FETCH_SUCCESS", payload: response.body });
+        dispatch({ type: "FETCH_SUCCESS", payload: response });
       } catch (error) {
         dispatch({ type: "FETCH_FAILURE", payload: error });
       }

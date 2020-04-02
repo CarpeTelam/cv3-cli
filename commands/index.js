@@ -7,7 +7,7 @@ import Init from "./init";
 import Open from "./open";
 import Update from "./update";
 
-import Timestamp from "../src/components/Timestamp";
+import { Timestamp } from "../src/components";
 
 /// CV3 CLI tool for local development
 function App(props) {

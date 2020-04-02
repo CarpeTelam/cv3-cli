@@ -1,21 +1,21 @@
-import React, { Fragment, useEffect, useState } from "react";
-import request from "request-promise";
+import React, { Fragment } from "react";
 import moment from "moment";
-import { jar } from "request";
 import { Box } from "ink";
 import { findIndex, sortBy } from "lodash";
 
 import { useCV3GetData } from "../src/hooks";
-import { Loading, Timestamp } from "../src/components";
+import { Loading } from "../src/components";
 
 function list() {
-  const [state, setPath] = useCV3GetData(
+  const [state, setInfo] = useCV3GetData(
     { view: "template_list" },
     {
-      javascript_files: { templates: {} },
-      other_files: { templates: {} },
-      stylesheets: { templates: {} },
-      template_list: { html_categories: {}, templates: {} }
+      body: {
+        javascript_files: { templates: {} },
+        other_files: { templates: {} },
+        stylesheets: { templates: {} },
+        template_list: { html_categories: {}, templates: {} }
+      }
     }
   );
 
@@ -23,7 +23,7 @@ function list() {
     javascript_files: { templates: rawJavaScript },
     stylesheets: { templates: rawStylesheets },
     template_list: { html_categories: rawCategories, templates: rawTemplates }
-  } = state.response;
+  } = state.response.body;
 
   const categories = [
     ...Object.keys(rawCategories).map(name => ({

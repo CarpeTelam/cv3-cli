@@ -11,6 +11,23 @@ import Select from "ink-select-input";
 import { useLoadJSON } from "../src/hooks";
 import { Timestamp } from "../src/components";
 
+async function getFiles(dir) {
+  const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
+  const files = await Promise.all(
+    dirents.map(dirent => {
+      const resolved = path.resolve(dir, dirent.name);
+      const { mtime } = fs.statSync(resolved);
+      return dirent.isDirectory()
+        ? getFiles(resolved)
+        : {
+            path: resolved.replace(process.cwd(), ""),
+            modified: moment(mtime).unix()
+          };
+    })
+  );
+  return [].concat(...files);
+}
+
 function extract() {
   const [items, setItems] = useState([]);
   const [globError, setGlobError] = useState("");
@@ -18,8 +35,7 @@ function extract() {
   const [extractedText, setExtractedText] = useState("");
   const { exit } = useContext(AppContext);
 
-  const root = process.cwd();
-  const storeConfigsPath = `${root}/store-config.json`;
+  const storeConfigsPath = `${process.cwd()}/store-configs.json`;
   const [storeConfigs, storeConfigsError] = useLoadJSON(storeConfigsPath);
 
   if (storeConfigsError) {
@@ -29,7 +45,9 @@ function extract() {
   useEffect(() => {
     async function processFiles(source) {
       try {
-        const filePaths = await glob(`${source}/*.zip`, { root });
+        const filePaths = await glob(`${source}/*.zip`, {
+          root: process.cwd()
+        });
         setItems(
           filePaths.map(filePath => {
             const filePathSplit = filePath.split("/");
@@ -46,35 +64,18 @@ function extract() {
     processFiles("/extract/store");
   }, []);
 
-  async function getFiles(dir) {
-    const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
-    const files = await Promise.all(
-      dirents.map(dirent => {
-        const resolved = path.resolve(dir, dirent.name);
-        const { mtime } = fs.statSync(resolved);
-        return dirent.isDirectory()
-          ? getFiles(resolved)
-          : {
-              path: resolved.replace(root, ""),
-              modified: moment(mtime).unix()
-            };
-      })
-    );
-    return [].concat(...files);
-  }
-
   const handleSelect = async ({ value }) => {
     const zip = new AdmZip(value);
 
     try {
-      zip.extractAllTo(`${root}/store`, true);
+      zip.extractAllTo(`${process.cwd()}/store`, true);
     } catch (error) {
       setExtractError(error);
     }
 
-    const files = await getFiles(`${root}/store`);
+    const files = await getFiles(`${process.cwd()}/store`);
     await fs.promises.writeFile(
-      `${root}/modified-snapshot.json`,
+      `${process.cwd()}/modified-snapshot.json`,
       JSON.stringify(files, null, 2)
     );
 
