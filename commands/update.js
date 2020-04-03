@@ -6,6 +6,7 @@ import { Loading, Timestamp } from "../src/components";
 import { useCV3PostTemplate } from "../src/hooks";
 import { getModifiedFiles, updateStoreConfigs } from "../src/utils";
 
+/// Update modified templates
 function update() {
   const [files, setFiles] = useState([]);
   const [responses, setResponses] = useState({});

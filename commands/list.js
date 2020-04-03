@@ -6,6 +6,7 @@ import { findIndex, sortBy } from "lodash";
 import { useCV3GetData } from "../src/hooks";
 import { Loading } from "../src/components";
 
+/// List template files from admin
 function list() {
   const [state, setInfo] = useCV3GetData(
     { view: "template_list" },

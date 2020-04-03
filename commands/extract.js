@@ -8,6 +8,7 @@ import Select from "ink-select-input";
 import { Timestamp } from "../src/components";
 import { checkStoreConfigs, getFiles, updateStoreConfigs } from "../src/utils";
 
+/// Extract store backup zip files
 function extract() {
   const [items, setItems] = useState([]);
   const [globError, setGlobError] = useState("");

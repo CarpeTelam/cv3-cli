@@ -5,6 +5,7 @@ import { Color } from "ink";
 import { Timestamp } from "../src/components";
 import { checkStoreConfigs } from "../src/utils";
 
+/// Open Staging URL in default browser
 function open() {
   const [storeConfigs, storeConfigsError] = checkStoreConfigs();
 

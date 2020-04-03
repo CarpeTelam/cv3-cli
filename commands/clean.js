@@ -4,6 +4,7 @@ import { Box, Color } from "ink";
 import { useDel } from "../src/hooks";
 import { Timestamp } from "../src/components/";
 
+/// Clean up backup files
 function clean() {
   const [deletedPaths, deletedError] = useDel([
     "./extract/store/*.zip",
