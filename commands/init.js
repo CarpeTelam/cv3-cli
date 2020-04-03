@@ -1,8 +1,7 @@
 import React, { Fragment, useContext, useState } from "react";
-import PropTypes from "prop-types";
 import fs from "fs";
 import moment from "moment";
-import { AppContext, Box, Color } from "ink";
+import { AppContext, Box } from "ink";
 
 import { useLoadJSON } from "../src/hooks";
 import { Input, Timestamp } from "../src/components";

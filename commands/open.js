@@ -1,6 +1,6 @@
 import React from "react";
 import openBrowser from "open";
-import { Box, Color } from "ink";
+import { Color } from "ink";
 
 import { Timestamp } from "../src/components";
 import { checkStoreConfigs } from "../src/utils";

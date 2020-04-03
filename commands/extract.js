@@ -1,33 +1,12 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import AdmZip from "adm-zip";
-import path from "path";
 import fs from "fs";
 import glob from "glob-promise";
-import moment from "moment";
-import { isEmpty } from "lodash";
 import { AppContext, Box, Color } from "ink";
 import Select from "ink-select-input";
 
 import { Timestamp } from "../src/components";
-import { useLoadJSON } from "../src/hooks";
-import { checkStoreConfigs, updateStoreConfigs } from "../src/utils";
-
-async function getFiles(dir) {
-  const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
-  const files = await Promise.all(
-    dirents.map(dirent => {
-      const resolved = path.resolve(dir, dirent.name);
-      const { mtime } = fs.statSync(resolved);
-      return dirent.isDirectory()
-        ? getFiles(resolved)
-        : {
-            path: resolved.replace(process.cwd(), ""),
-            modified: moment(mtime).unix()
-          };
-    })
-  );
-  return [].concat(...files);
-}
+import { checkStoreConfigs, getFiles, updateStoreConfigs } from "../src/utils";
 
 function extract() {
   const [items, setItems] = useState([]);
@@ -79,7 +58,7 @@ function extract() {
       JSON.stringify(files, null, 2)
     );
 
-    await updateStorecConfigs(moment().unix());
+    await updateStorecConfigs();
 
     setExtractedText(
       <Timestamp action="extracted" actionColor="blue" message={value} />
