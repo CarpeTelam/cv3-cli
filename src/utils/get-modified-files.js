@@ -15,9 +15,9 @@ async function getModifiedFiles(props) {
         return getModifiedFiles({ ...props, dir: resolvedPath });
       }
       const pathInfo = resolvedPath.split("/");
-      const filename = pathInfo[pathInfo.length - 1];
+      const filename = pathInfo.slice(-1)[0];
       const fileInfo = filename.split(".");
-      const extension = fileInfo[fileInfo.length - 1];
+      const extension = fileInfo.slice(-1)[0];
       const template = fs.readFileSync(resolvedPath);
       const { mtime } = fs.statSync(resolvedPath);
       const modified = moment(mtime).unix();

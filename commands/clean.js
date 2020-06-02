@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Color } from "ink";
+import { Box } from "ink";
 
 import { useDel } from "../src/hooks";
 import { Timestamp } from "../src/components/";
