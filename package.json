@@ -19,7 +19,7 @@
     "ink-select-input": "^3.1.2",
     "ink-spinner": "^3.0.1",
     "lodash": "^4.17.15",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "open": "^7.0.3",
     "pastel": "^1.0.3",
     "prop-types": "^15.7.2",
